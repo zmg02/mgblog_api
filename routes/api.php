@@ -17,37 +17,37 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-// Auth::guard('api')->user(); // 登录用户实例
-// Auth::guard('api')->check(); // 如果用户通过了认证
-// Auth::guard('api')->id(); // 通过认证的用户id
-});
-
-// 需要登录的api
-Route::group(['middleware' => 'auth:api'], function() {
-    Route::post('articles', 'Api\ArticleController@store');
-    Route::put('articles/{article}', 'Api\ArticleController@update');
-    Route::delete('articles/{article}', 'Api\ArticleController@delete');
-    Route::post('articleCategories', 'Api\ArticleCategoryController@store');
-    Route::put('articleCategories/{articleCategory}', 'Api\ArticleCategoryController@update');
-    Route::delete('articleCategories/{articleCategory}', 'Api\ArticleCategoryController@delete');
-
-    Route::post('logout', 'Auth\LoginController@logout');
-
+    // Auth::guard('api')->user(); // 登录用户实例
+    // Auth::guard('api')->check(); // 如果用户通过了认证
+    // Auth::guard('api')->id(); // 通过认证的用户id
     Route::apiResources([
         'test' => TestController::class,
     ]);
 });
+
+// 需要登录的api
+Route::namespace('Api')->prefix('v1')->middleware('auth:api')->group(function () {
+    Route::post('articles', 'ArticleController@store');
+    Route::put('articles/{article}', 'ArticleController@update');
+    Route::delete('articles/{article}', 'ArticleController@destroy');
+
+    Route::post('articleCategories', 'ArticleCategoryController@store');
+    Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
+    Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
+});
 // 不需要登录的api
-Route::get('articles', 'Api\ArticleController@index');
-Route::get('articles/{article}', 'Api\ArticleController@show');
+Route::namespace('Api')->prefix('v1')->group(function () {
+    Route::get('articles', 'ArticleController@index');
+    Route::get('articles/{article}', 'ArticleController@show');
 
-Route::get('articleCategories', 'Api\ArticleCategoryController@index');
-Route::get('articleCategories/{articleCategory}', 'Api\ArticleCategoryController@show');
+    Route::get('articleCategories', 'ArticleCategoryController@index');
+    Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
+});
+Route::namespace('Auth')->prefix('v1')->group(function () {
+    Route::post('register', 'RegisterController@register');
+    Route::post('login', 'LoginController@login');
+});
 
-Route::post('register', 'Auth\RegisterController@register');
-Route::post('login', 'Auth\LoginController@login');
-
-// 测试路由
-// Route::apiResources([
-//     'test' => TestController::class,
-// ]);
+Route::namespace('Auth')->prefix('v1')->middleware('auth:api')->group(function () {
+    Route::post('logout', 'LoginController@logout');
+});

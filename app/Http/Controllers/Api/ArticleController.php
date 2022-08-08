@@ -40,7 +40,13 @@ class ArticleController extends Controller
         // return response()->json($article, 200);
     }
 
-    public function delete(Article $article)
+    /**
+     * 从存储中移除指定的资源。
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Article $article)
     {
         $article->delete();
 

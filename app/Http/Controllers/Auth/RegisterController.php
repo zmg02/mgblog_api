@@ -109,7 +109,7 @@ class RegisterController extends Controller
     {
         $user->generateToken();
 
-        return response()->json(['data' => $user->toArray()], 201);
+        return api_response($user->toArray());
     }
     /**
      * 重载注册表单

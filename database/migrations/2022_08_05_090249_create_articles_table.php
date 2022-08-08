@@ -19,7 +19,7 @@ class CreateArticlesTable extends Migration
             $table->integer('category_id')->default(0);
             $table->string('default_img')->default('');
             $table->string('title')->default('');
-            $table->longText('content');
+            $table->longText('content')->nullable();
             $table->tinyInteger('order')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->smallInteger('comment_count')->default(0);

@@ -54,7 +54,8 @@ class LoginController extends Controller
             $user = $this->guard()->user();
             $user->generateToken();
 
-            return response()->json(['code'=>200, 'data'=>$user->toArray()]);
+            return api_response($user->toArray());
+            // return response()->json(['code'=>200, 'data'=>$user->toArray()]);
         }
         return $this->sendFailedLoginResponse($request);
     }
@@ -72,8 +73,8 @@ class LoginController extends Controller
             $user->api_token = null;
             $user->save();
         }
-
-        return response()->json(['code'=>200, 'data' => 'User logged out.'], 200);
+        return api_response();
+        // return response()->json(['code'=>200, 'data' => 'User logged out.'], 200);
     }
 
     /**

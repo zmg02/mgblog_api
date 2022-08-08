@@ -41,12 +41,39 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token'
     ];
-
+    /**
+     * 模型的默认属性值。
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'is_admin' => 0,
+    ];
+    /**
+     * 生成token并保存
+     *
+     * @return void
+     */
     public function generateToken()
     {
         $this->api_token = str_random(60);
         $this->save();
 
         return $this->api_token;
+    }
+
+    // 重写分页
+    public function getPageList($page, $pageSize)
+    {
+        return $this->paginate($pageSize, ['*'], $page, 'page');
+    }
+
+    /**
+     * 一对多
+     * 一个作者多篇文章
+     */
+    public function article()
+    {
+        return $this->hasMany('App\Model\Article');
     }
 }

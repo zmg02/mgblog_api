@@ -13,4 +13,40 @@ class Article extends BaseModel
     protected $guarded = [
         'create_time', 'update_time'
     ];
+    /**
+     * 模型的默认属性值。
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'comment_count' => 0,
+        'praise_count' => 0,
+    ];
+
+    /**
+     * 一对多（反向）
+     * 一个作者多篇文章
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Model\User');
+    }
+
+    /**
+     * 一对多（反向）
+     * 一个文章分类多篇文章
+     */
+    public function category()
+    {
+        return $this->belongsTo('App\Model\ArticleCategory');
+    }
+
+    /**
+     * 多对多
+     * 一篇文章多个标签，一个标签多个文章
+     */
+    public function tag()
+    {
+        return $this->belongsToMany('App\Model\Tag');
+    }
 }

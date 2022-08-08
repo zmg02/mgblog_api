@@ -34,6 +34,10 @@ Route::namespace('Api')->prefix('v1')->middleware('auth:api')->group(function ()
     Route::post('articleCategories', 'ArticleCategoryController@store');
     Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
     Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
+
+    Route::post('users', 'UserController@store');
+    Route::put('users/{user}', 'UserController@update');
+    Route::delete('users/{user}', 'UserController@destroy');
 });
 // 不需要登录的api
 Route::namespace('Api')->prefix('v1')->group(function () {
@@ -42,6 +46,9 @@ Route::namespace('Api')->prefix('v1')->group(function () {
 
     Route::get('articleCategories', 'ArticleCategoryController@index');
     Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
+
+    Route::get('users', 'UserController@index');
+    Route::get('users/{user}', 'UserController@show');
 });
 Route::namespace('Auth')->prefix('v1')->group(function () {
     Route::post('register', 'RegisterController@register');

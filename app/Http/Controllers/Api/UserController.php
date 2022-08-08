@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Model\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -12,20 +13,25 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $userM = new User();
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('page_size', 10);
+        $list = $userM->getPageList($page, $pageSize);
+        return api_response($list);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 将新创建的资源存储到存储中。
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $user = User::create($request->all());
+        return api_response($user);
     }
 
     /**
@@ -34,9 +40,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return api_response($user);
     }
 
     /**
@@ -46,9 +52,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $user->update($request->all());
+        return api_response($user);
     }
 
     /**
@@ -57,8 +64,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return api_response();
     }
 }

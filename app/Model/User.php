@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Pagination\Paginator;
 
 // class User extends BaseModel
 class User extends Authenticatable
@@ -66,6 +67,28 @@ class User extends Authenticatable
     public function getPageList($page, $pageSize)
     {
         return $this->paginate($pageSize, ['*'], $page, 'page');
+    }
+    /**重写分页方法 */
+    public function paginate($perPage = null, $columns = ['*'], $page = null, $pageName = 'page')
+    {
+        $page = $page ?: Paginator::resolveCurrentPage($pageName);
+
+        $perPage = $perPage ?: $this->model->getPerPage();
+
+        $results = ($total = $this->toBase()->getCountForPagination())
+            ? $this->forPage($page, $perPage)->get($columns)
+            : $this->model->newCollection();
+
+        $pages = ceil($total / $perPage);
+
+        $result = [
+            'total'         => $total,
+            'current_page'  => $page,
+            'page_size'     => $perPage,
+            'pages'         => $pages,
+            'list'          => $results
+        ];
+        return $result;
     }
 
     /**

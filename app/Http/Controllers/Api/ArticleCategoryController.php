@@ -43,7 +43,7 @@ class ArticleCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($articleCategory)
+    public function show(ArticleCategory $articleCategory)
     {
         return api_response($articleCategory);
     }
@@ -55,7 +55,7 @@ class ArticleCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $articleCategory)
+    public function update(Request $request, ArticleCategory $articleCategory)
     {
         $articleCategory->update($request->all());
 

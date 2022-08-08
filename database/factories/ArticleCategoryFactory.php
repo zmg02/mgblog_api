@@ -1,0 +1,16 @@
+<?php
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+
+use App\Model\ArticleCategory;
+use Faker\Generator as Faker;
+
+$factory->define(ArticleCategory::class, function (Faker $faker) {
+    return [
+        'name' => $faker->words(3, true),
+        'count' => $faker->numberBetween(0, 100),
+        'status' => $faker->numberBetween(0, 1),
+        'create_time' => $faker->unixTime('now'),
+        'update_time' => $faker->unixTime('now')
+    ];
+});

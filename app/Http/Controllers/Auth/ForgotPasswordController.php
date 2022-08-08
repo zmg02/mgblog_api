@@ -19,4 +19,10 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+
+    public function showLinkRequestForm()
+    {
+        return response()->json(['code'=>404, 'data' => '页面不存在。']);
+    }
+
 }

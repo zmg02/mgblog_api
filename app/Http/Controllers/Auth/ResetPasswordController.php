@@ -27,4 +27,9 @@ class ResetPasswordController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+
+    public function showResetForm($token)
+    {
+        return response()->json(['code'=>404, 'data' => '页面不存在。']);
+    }
 }

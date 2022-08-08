@@ -58,7 +58,12 @@ class LoginController extends Controller
         }
         return $this->sendFailedLoginResponse($request);
     }
-
+    /**
+     * 重载登出请求
+     *
+     * @param Request $request
+     * @return void
+     */
     public function logout(Request $request)
     {
         $user = Auth::guard('api')->user();
@@ -69,5 +74,15 @@ class LoginController extends Controller
         }
 
         return response()->json(['code'=>200, 'data' => 'User logged out.'], 200);
+    }
+
+    /**
+     * 重载登录表单
+     *
+     * @return void
+     */
+    public function showLoginForm()
+    {
+        return response()->json(['code'=>404, 'data' => '页面不存在。']);
     }
 }

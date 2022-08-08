@@ -98,11 +98,26 @@ class RegisterController extends Controller
         return $this->registered($request, $user)
                     ?: redirect($this->redirectPath());
     }
-
+    /**
+     * 获取用户token并返回用户数据
+     *
+     * @param Request $request
+     * @param [type] $user
+     * @return void
+     */
     protected function registered(Request $request, $user)
     {
         $user->generateToken();
 
         return response()->json(['data' => $user->toArray()], 201);
+    }
+    /**
+     * 重载注册表单
+     *
+     * @return void
+     */
+    public function showRegistrationForm()
+    {
+        return response()->json(['code'=>404, 'data' => '页面不存在。']);
     }
 }

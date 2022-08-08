@@ -8,34 +8,43 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Article::all();
+        $articleM = new Article();
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('page_size', 10);
+
+        $list = $articleM->getPageList($page, $pageSize);
+        return api_response($list);
+        // return Article::all();
     }
 
     public function show(Article $article)
     {
-        return $article;
+        return api_response($article);
     }
 
     public function store(Request $request)
     {
         $article = Article::create($request->all());
 
-        return response()->json($article, 201);
+        return api_response($article);
+        // return response()->json($article, 201);
     }
 
     public function update(Request $request, Article $article)
     {
         $article->update($request->all());
 
-        return response()->json($article, 200);
+        return api_response($article);
+        // return response()->json($article, 200);
     }
 
     public function delete(Article $article)
     {
         $article->delete();
 
-        return response()->json(null, 204);
+        return api_response();
+        // return response()->json(null, 204);
     }
 }

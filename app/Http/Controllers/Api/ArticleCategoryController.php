@@ -13,9 +13,14 @@ class ArticleCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ArticleCategory::all();
+        $articleCategoryM = new ArticleCategory();
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('page_size', 10);
+
+        $list = $articleCategoryM->getPageList($page, $pageSize);
+        return api_response($list);
     }
 
 
@@ -29,7 +34,7 @@ class ArticleCategoryController extends Controller
     {
         $articleCategory = ArticleCategory::create($request->all());
 
-        return response()->json($articleCategory, 201);
+        return api_response($articleCategory);
     }
 
     /**
@@ -40,7 +45,7 @@ class ArticleCategoryController extends Controller
      */
     public function show($articleCategory)
     {
-        return $articleCategory;
+        return api_response($articleCategory);
     }
 
     /**
@@ -54,7 +59,7 @@ class ArticleCategoryController extends Controller
     {
         $articleCategory->update($request->all());
 
-        return response()->json($articleCategory, 200);
+        return api_response($articleCategory);
     }
 
     /**
@@ -67,6 +72,6 @@ class ArticleCategoryController extends Controller
     {
         $articleCategory->delete();
 
-        return response()->json(null, 204);
+        return api_response();
     }
 }

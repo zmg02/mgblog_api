@@ -23,3 +23,10 @@ if (!function_exists('_print')) {
         exit('打印完成');
     }
 }
+
+if (!function_exists('api_response')) {
+    function api_response($data = null, $code = 200, $message = 'success')
+    {
+        return response(['code' => $code, 'message' => $message, 'data' => $data], 200);
+    }
+}

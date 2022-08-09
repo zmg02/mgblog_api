@@ -38,6 +38,10 @@ Route::namespace('Api')->prefix('v1')->middleware('auth:api')->group(function ()
     Route::post('users', 'UserController@store');
     Route::put('users/{user}', 'UserController@update');
     Route::delete('users/{user}', 'UserController@destroy');
+    Route::get('users/info/{token}', 'UserController@adminInfo');
+    Route::get('users/status', function() {
+        return api_response(config('user.status'));
+    });
 });
 // 不需要登录的api
 Route::namespace('Api')->prefix('v1')->group(function () {

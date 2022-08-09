@@ -99,4 +99,14 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Model\Article');
     }
+    /**
+     * 管理员信息
+     *
+     * @param [type] $token
+     * @return void
+     */
+    public function adminUserInfoToToken($token)
+    {
+        return $this->where(['api_token' => $token, 'is_admin' => 1])->first();
+    }
 }

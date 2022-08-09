@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
         //         in_array('admin', $guards) ? route('admin.login') : route('login')
         //     );
         return $request->expectsJson()
-            ? response()->json(['code' => 401, 'message' => $exception->getMessage()])
-            : response()->json(['code' => 401, 'message' => 'Unauthenticated.']);
+            ? response()->json(['code' => 401, 'message' => '未认证'])
+            : response()->json(['code' => 401, 'message' => '未认证']);
     }
 }

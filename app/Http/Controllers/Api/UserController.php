@@ -69,4 +69,14 @@ class UserController extends Controller
         $user->delete();
         return api_response();
     }
+
+    public function adminInfo($token)
+    {
+        $userM = new User();
+        $info = $userM->adminUserInfoToToken($token);
+        if ($info == null || empty($info->toArray())) {
+            return api_response($info, 402, 'token过期');
+        }
+        return api_response($info);
+    }
 }

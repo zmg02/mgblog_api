@@ -16,9 +16,35 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $userM = new User();
-        $page = $request->input('page', 1);
+        // $page = $request->input('page', 1);
         $pageSize = $request->input('page_size', 10);
-        $list = $userM->getPageList($page, $pageSize);
+        $where = [];
+        $keywords = $request->input('keywords');
+        $orWhere = [];
+        if ($keywords) {
+            $orWhere[] = ['name', 'like', "%$keywords%", 'OR'];
+            $orWhere[] = ['phone', 'like', "%$keywords%", 'OR'];
+            $orWhere[] = ['email', 'like', "%$keywords%", 'OR'];
+        }
+        $time = $request->input('time');
+        if ($time) {
+            switch ($time) {
+                case 'quarterly':
+                    $uTime = strtotime("-3 month");
+                    break;
+                default:
+                    $uTime = strtotime("last $time");
+            }
+            $where[] = ['create_time', '>', $uTime];
+        }
+        $status = $request->input('status');
+        // status 0
+        if ($status != null) {
+            $where['status'] = $status;
+        }
+
+        // $list = $userM->where($where)->where($orWhere)->toSql();
+        $list = $userM->where($where)->where($orWhere)->paginate($pageSize);
         return api_response($list);
     }
 

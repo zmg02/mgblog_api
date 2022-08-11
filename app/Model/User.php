@@ -28,11 +28,11 @@ class User extends Authenticatable
     const UPDATED_AT = 'update_time';
     /**
      * 不可批量分配的属性。黑名单
-     *
+     * 'email_verified_time', 
      * @var array
      */
     protected $guarded = [
-        'email_verified_time', 'last_login_time', 'create_time', 'update_time'
+        'last_login_time', 'create_time', 'update_time'
     ];
     /**
      * 数组中应该隐藏的属性。
@@ -63,34 +63,6 @@ class User extends Authenticatable
         return $this->api_token;
     }
 
-    // 重写分页
-    public function getPageList($page, $pageSize)
-    {
-        return $this->paginate($pageSize, ['*'], $page, 'page');
-    }
-    /**重写分页方法 */
-    public function paginate($perPage = null, $columns = ['*'], $page = null, $pageName = 'page')
-    {
-        $page = $page ?: Paginator::resolveCurrentPage($pageName);
-
-        $perPage = $perPage ?: $this->model->getPerPage();
-
-        $results = ($total = $this->toBase()->getCountForPagination())
-            ? $this->forPage($page, $perPage)->get($columns)
-            : $this->model->newCollection();
-
-        $pages = ceil($total / $perPage);
-
-        $result = [
-            'total'         => $total,
-            'current_page'  => $page,
-            'page_size'     => $perPage,
-            'pages'         => $pages,
-            'list'          => $results
-        ];
-        return $result;
-    }
-
     /**
      * 一对多
      * 一个作者多篇文章
@@ -108,5 +80,85 @@ class User extends Authenticatable
     public function adminUserInfoToToken($token)
     {
         return $this->where(['api_token' => $token, 'is_admin' => 1])->first();
+    }
+    /**
+     * 设置最后一次登录时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function setLastLoginTimeAttribute($value)
+    {
+        $this->attributes['last_login_time'] = is_int($value) ? $value : strtotime($value);
+    }
+    /**
+     * 获取最后一次登录时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getLastLoginTimeAttribute()
+    {
+        return date('Y-m-d H:i:s', $this->attributes['last_login_time']);
+    }
+    /**
+     * 设置邮箱验证时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function setEmailVerifiedTimeAttribute($value)
+    {
+        $this->attributes['email_verified_time'] = is_int($value) ? $value : strtotime($value);
+    }
+    /**
+     * 获取邮箱验证时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getEmailVerifiedTimeAttribute()
+    {
+        return date('Y-m-d H:i:s', $this->attributes['email_verified_time']);
+    }
+    /**
+     * 设置注册时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function setCreateTimeAttribute($value)
+    {
+        $this->attributes['create_time'] = is_int($value) ? $value : strtotime($value);
+    }
+    /**
+     * 获取注册时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getCreateTimeAttribute()
+    {
+        return date('Y-m-d H:i:s', $this->attributes['create_time']);
+    }
+    /**
+     * 设置更新时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function setUpdateTimeAttribute($value)
+    {
+        $this->attributes['update_time'] = is_int($value) ? $value : strtotime($value);
+    }
+    /**
+     * 获取更新时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getUpdateTimeAttribute()
+    {
+        return date('Y-m-d H:i:s', $this->attributes['update_time']);
     }
 }

@@ -32,6 +32,7 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
+    Route::post('users/upload', 'UserController@upload');
 });
 
 // 后台api,登录
@@ -46,9 +47,10 @@ Route::group([
     Route::put('users/{user}', 'UserController@update');
     Route::delete('users/{user}', 'UserController@destroy');
     Route::get('user/status', 'UserController@status');
-    Route::PATCH('users/verify', 'UserController@verify');
-    Route::PATCH('users/blacklist', 'UserController@blacklist');
-    Route::PATCH('users/destroy_selected', 'UserController@destroySelected');
+    Route::patch('users/verify', 'UserController@verify');
+    Route::patch('users/blacklist', 'UserController@blacklist');
+    Route::patch('users/destroy_selected', 'UserController@destroySelected');
+
 });
 
 

@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
         // 如果您使用 Laravel 服务其他页面，则必须编辑代码以使用Accept标头，否则来自常规请求的 404 错误也会返回 JSON。
         // if ($exception instanceof ModelNotFoundException && $request->wantsJson()) {
         if ($exception instanceof ModelNotFoundException) {
-            return response()->json(['code' => 404, 'error' => 'Resource not found'], 404);
+            return api_response(null, 404, '资源未找到');
         }
 
         return parent::render($request, $exception);
@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
         //         in_array('admin', $guards) ? route('admin.login') : route('login')
         //     );
         return $request->expectsJson()
-            ? response()->json(['code' => 401, 'message' => '未认证'])
-            : response()->json(['code' => 401, 'message' => '未认证']);
+            ? api_response(null, 401, '未认证1')
+            : api_response(null, 401, '未认证');
     }
 }

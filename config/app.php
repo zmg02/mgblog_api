@@ -175,6 +175,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        // 自定义，JWT认证
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
     ],
 

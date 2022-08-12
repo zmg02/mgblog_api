@@ -4,6 +4,8 @@ use Api\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use function PHPSTORM_META\map;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,6 +17,62 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// 后台api
+Route::group([
+    'prefix' => 'admin/v1',
+    'namespace' => 'Admin\Api'
+], function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+});
+
+// 后台api,登录
+Route::group([
+    'prefix' => 'admin/v1',
+    'namespace' => 'Admin\Api',
+    'middleware' => 'auth:admin'
+], function () {
+    Route::get('users', 'UserController@index');
+    Route::get('users/{user}', 'UserController@show');
+    Route::post('users', 'UserController@store');
+    Route::put('users/{user}', 'UserController@update');
+    Route::delete('users/{user}', 'UserController@destroy');
+    Route::get('user/status', 'UserController@status');
+});
+
+
+
+
+// 前台api
+Route::namespace('Api')->prefix('v1')->group(function(){
+    // 不用登录的api
+    Route::get('articles', 'ArticleController@index');
+    Route::get('articles/{article}', 'ArticleController@show');
+    Route::get('articleCategories', 'ArticleCategoryController@index');
+    Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
+    // 需要登录的api
+    Route::middleware('auth:api')->group(function () {
+        Route::post('articles', 'ArticleController@store');
+        Route::put('articles/{article}', 'ArticleController@update');
+        Route::delete('articles/{article}', 'ArticleController@destroy');
+    
+        Route::post('articleCategories', 'ArticleCategoryController@store');
+        Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
+        Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
+    });
+
+});
+Route::namespace('Auth')->prefix('v1')->group(function () {
+    Route::post('register', 'RegisterController@register');
+    Route::post('login', 'LoginController@login');
+});
+Route::namespace('Auth')->prefix('v1')->middleware('auth:api')->group(function () {
+    Route::post('logout', 'LoginController@logout');
+});
+
+// test
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
     // Auth::guard('api')->user(); // 登录用户实例
@@ -23,42 +81,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::apiResources([
         'test' => TestController::class,
     ]);
-});
-
-// 需要登录的api
-Route::namespace('Api')->prefix('v1')->middleware('auth:api')->group(function () {
-    Route::post('articles', 'ArticleController@store');
-    Route::put('articles/{article}', 'ArticleController@update');
-    Route::delete('articles/{article}', 'ArticleController@destroy');
-
-    Route::post('articleCategories', 'ArticleCategoryController@store');
-    Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
-    Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
-
-    Route::post('users', 'UserController@store');
-    Route::put('users/{user}', 'UserController@update');
-    Route::delete('users/{user}', 'UserController@destroy');
-    Route::get('users/info/{token}', 'UserController@adminInfo');
-    Route::get('users/status', function() {
-        return api_response(config('user.status'));
-    });
-});
-// 不需要登录的api
-Route::namespace('Api')->prefix('v1')->group(function () {
-    Route::get('articles', 'ArticleController@index');
-    Route::get('articles/{article}', 'ArticleController@show');
-
-    Route::get('articleCategories', 'ArticleCategoryController@index');
-    Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
-
-    Route::get('users', 'UserController@index');
-    Route::get('users/{user}', 'UserController@show');
-});
-Route::namespace('Auth')->prefix('v1')->group(function () {
-    Route::post('register', 'RegisterController@register');
-    Route::post('login', 'LoginController@login');
-});
-
-Route::namespace('Auth')->prefix('v1')->middleware('auth:api')->group(function () {
-    Route::post('logout', 'LoginController@logout');
 });

@@ -18,6 +18,6 @@ Route::get('/', function () {
     return response()->json(['data'=>'Ok'], 200);
 });
 
-Auth::routes();
+// Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');

@@ -18,7 +18,7 @@ if (!function_exists('_print')) {
     function _print($data)
     {
         echo '<pre>';
-        var_dump($data);
+        print_r($data);
         echo '</pre>';
         exit('打印完成');
     }

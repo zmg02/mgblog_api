@@ -31,6 +31,10 @@ class AuthController extends Controller
         if (!$token = auth('admin')->attempt($credentials)) {
             return api_response(null, 401, 'Unauthorized');
         }
+        
+        if (!auth('admin')->check() || auth('admin')->user()->status != 1 && auth('admin')->user()->is_admin != 1) {
+            return api_response(null, 401, 'Unauthorized');
+        }
 
         return api_response($this->respondWithToken($token));
     }
@@ -83,5 +87,4 @@ class AuthController extends Controller
             'expires_in' => auth('admin')->factory()->getTTL() * 60
         ]);
     }
-
 }

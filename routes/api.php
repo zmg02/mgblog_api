@@ -15,6 +15,12 @@ use function PHPSTORM_META\map;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
+| GET（SELECT）：从服务器取出资源（一项或多项）。
+| POST（CREATE）：在服务器新建一个资源。
+| PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。
+| PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。
+| DELETE（DELETE）：从服务器删除资源。
+|
 */
 
 // 后台api
@@ -40,13 +46,16 @@ Route::group([
     Route::put('users/{user}', 'UserController@update');
     Route::delete('users/{user}', 'UserController@destroy');
     Route::get('user/status', 'UserController@status');
+    Route::PATCH('users/verify', 'UserController@verify');
+    Route::PATCH('users/blacklist', 'UserController@blacklist');
+    Route::PATCH('users/destroy_selected', 'UserController@destroySelected');
 });
 
 
 
 
 // 前台api
-Route::namespace('Api')->prefix('v1')->group(function(){
+Route::namespace('Api')->prefix('v1')->group(function () {
     // 不用登录的api
     Route::get('articles', 'ArticleController@index');
     Route::get('articles/{article}', 'ArticleController@show');
@@ -57,12 +66,11 @@ Route::namespace('Api')->prefix('v1')->group(function(){
         Route::post('articles', 'ArticleController@store');
         Route::put('articles/{article}', 'ArticleController@update');
         Route::delete('articles/{article}', 'ArticleController@destroy');
-    
+
         Route::post('articleCategories', 'ArticleCategoryController@store');
         Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
         Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
     });
-
 });
 Route::namespace('Auth')->prefix('v1')->group(function () {
     Route::post('register', 'RegisterController@register');

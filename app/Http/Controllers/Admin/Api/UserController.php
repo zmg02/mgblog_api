@@ -92,12 +92,69 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        $user->update(['status'=>0]);
+        // $user->delete();
         return api_response();
     }
-
+    /**
+     * 用户所有状态
+     *
+     * @return void
+     */
     public function status()
     {
         return api_response(config('user.status'));
+    }
+    /**
+     * 批量操作
+     *
+     * @param [type] $request
+     * @param [type] $name
+     * @return void
+     */
+    protected function operation($request, $name)
+    {
+        $userM = new User();
+        $data = $request->input('data');
+        $userIds = array_column($data, 'id');
+        if (empty($userIds)) return api_response(null, 4004, '请求参数-用户ID，未找到');
+
+        $result = $userM->$name($userIds);
+
+        if ($result > 0) {
+            return api_response($result);
+        } else {
+            return api_response($result, 4005, '未修改内容');
+        }
+    }
+    /**
+     * 批量验证用户
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function verify(Request $request)
+    {
+        return $this->operation($request, 'verify');
+    }
+    /**
+     * 批量拉黑用户
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function blacklist(Request $request)
+    {
+        return $this->operation($request, 'blacklist');
+    }
+    /**
+     * 批量删除用户
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function destroySelected(Request $request)
+    {
+        return $this->operation($request, 'destroySelected');
     }
 }

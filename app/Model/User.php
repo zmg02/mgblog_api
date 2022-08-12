@@ -173,4 +173,19 @@ class User extends Authenticatable implements JWTSubject
     {
         return date('Y-m-d H:i:s', $this->attributes['update_time']);
     }
+
+    public function verify($userIds)
+    {
+        return $this->whereIn('id', $userIds)->update(['email_verified_time' => time()]);
+    }
+
+    public function blacklist($userIds)
+    {
+        return $this->whereIn('id', $userIds)->update(['status' => 2]);
+    }
+
+    public function destroySelected($userIds)
+    {
+        return $this->whereIn('id', $userIds)->update(['status' => 0]);
+    }
 }

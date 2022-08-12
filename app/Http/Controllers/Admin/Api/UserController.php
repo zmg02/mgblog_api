@@ -42,7 +42,14 @@ class UserController extends Controller
         if ($status != null) {
             $where['status'] = $status;
         }
-
+        $isAuthor = $request->input('is_author');
+        if ($isAuthor) {
+            $where['is_author'] = $isAuthor;
+        }
+        $isAdmin = $request->input('is_admin');
+        if ($isAdmin) {
+            $where['is_admin'] = $isAdmin;
+        }
         // $list = $userM->where($where)->where($orWhere)->toSql();
         $list = $userM->where($where)->where($orWhere)->paginate($pageSize);
         return api_response($list);

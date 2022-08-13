@@ -41,16 +41,14 @@ Route::group([
     'namespace' => 'Admin\Api',
     'middleware' => 'auth:admin'
 ], function () {
-    Route::get('users', 'UserController@index');
-    Route::get('users/{user}', 'UserController@show');
-    Route::post('users', 'UserController@store');
-    Route::put('users/{user}', 'UserController@update');
-    Route::delete('users/{user}', 'UserController@destroy');
+    // 用户
+    Route::apiResource('users', 'UserController');
     Route::get('user/status', 'UserController@status');
     Route::patch('users/verify', 'UserController@verify');
     Route::patch('users/blacklist', 'UserController@blacklist');
     Route::patch('users/destroy_selected', 'UserController@destroySelected');
-
+    // 文章
+    Route::apiResource('articles', 'ArticleController');
 });
 
 

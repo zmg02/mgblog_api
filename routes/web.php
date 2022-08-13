@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     // return view('welcome');
-    return response()->json(['data'=>'Ok'], 200);
+    return api_response(null);
 });
 
 // Auth::routes();

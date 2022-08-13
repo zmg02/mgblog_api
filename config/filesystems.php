@@ -65,6 +65,39 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        // 'upload' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/upload'),
+        //     'url' => env('APP_RUL') . '/storage',
+        // ],
+        // 'ftp' => [
+        //     'driver' => 'ftp',
+        //     'host' => 'ftp.example.com',
+        //     'username' => 'your-username',
+        //     'password' => 'your-password',
+        
+        //    // 可选的 FTP 配置项...
+        //     // 'port' => 21,
+        //     // 'root' => '',
+        //     // 'passive' => true,
+        //     // 'ssl' => true,
+        //     // 'timeout' => 30,
+        // ],
+        // 'sftp' => [
+        //     'driver' => 'sftp',
+        //     'host' => 'example.com',
+        //     'username' => 'your-username',
+        //     'password' => 'your-password',
+        
+        //     // 基于 SSH 密钥的身份验证设置...
+        //     // 'privateKey' => '/path/to/privateKey',
+        //     // 'password' => 'encryption-password',
+        
+        //     // 可选的 SFTP 配置...
+        //     // 'port' => 22,
+        //     // 'root' => '',
+        //     // 'timeout' => 30,
+        // ],
     ],
 
     /*

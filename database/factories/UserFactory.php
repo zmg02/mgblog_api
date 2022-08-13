@@ -20,12 +20,15 @@ use Illuminate\Support\Str;
 $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
+        'avatar' => $faker->imageUrl(500, 500, 'dogs', true, 'Faker'),
         'desc' => $faker->paragraph(3, true),
         'phone' => $faker->unique()->phoneNumber,
         'email' => $faker->unique()->safeEmail,
         'email_verified_time' => $faker->unixTime('now'),
         'password' => $faker->sha1,
+        'status' => $faker->numberBetween(0, 1),
         'is_admin' => $faker->numberBetween(0, 1),
+        'is_author' => $faker->numberBetween(0, 1),
         'article_count' => $faker->numberBetween(1, 100),
         'last_login_time' => $faker->unixTime('now'),
         'last_login_ip' => $faker->ipv4,

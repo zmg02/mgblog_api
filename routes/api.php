@@ -49,6 +49,8 @@ Route::group([
     Route::patch('users/destroy_selected', 'UserController@destroySelected');
     // 文章
     Route::apiResource('articles', 'ArticleController');
+    // 文章分类
+    Route::apiResource('article_categories', 'ArticleCategoryController');
 });
 
 

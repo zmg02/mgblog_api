@@ -29,7 +29,7 @@ class Article extends BaseModel
      */
     public function user()
     {
-        return $this->belongsTo('App\Model\User');
+        return $this->belongsTo('App\Model\User', 'user_id', 'id');
     }
 
     /**

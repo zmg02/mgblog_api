@@ -19,9 +19,8 @@ class UserController extends Controller
         $userM = new User();
         // $page = $request->input('page', 1);
         $pageSize = $request->input('page_size', 10);
-        $where = [];
+        $where = $orWhere = [];
         $keywords = $request->input('keywords');
-        $orWhere = [];
         if ($keywords) {
             $orWhere[] = ['name', 'like', "%$keywords%", 'OR'];
             $orWhere[] = ['phone', 'like', "%$keywords%", 'OR'];

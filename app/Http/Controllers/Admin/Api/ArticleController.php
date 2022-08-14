@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
 use App\Model\Article;
+use App\Model\ArticleCategory;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -13,10 +14,34 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $articleM = new Article();
-        $list = $articleM->paginate(10);
+        $pageSize = $request->input('page_size', 10);
+        $keywords = $request->query('keywords');
+        $categoryId = $request->query('category_id');
+        $status = $request->query('status');
+
+        $list = $articleM->when($keywords, function($query) use ($keywords) {
+            $query->where('title', 'like', "%{$keywords}%")
+            ->orWhere('content', 'like', "%{$keywords}%")
+            ->orWhereHas('user', function ($query) use ($keywords) {
+                $query->where('name', 'like', "%{$keywords}%");
+            });
+        })
+        ->when($categoryId, function($query) use ($categoryId) {
+            $query->where('category_id', $categoryId);
+        })
+        ->when($status, function($query) use ($status) {
+            $query->where('status', $status);
+        })
+        ->with(['user:id,name'])
+        ->with(['category:id,name'])
+        ->orderBy('order', 'desc')
+        // ->toSql();
+        ->paginate($pageSize);
+       
+        // $list = $articleM->where($where)->whereHas()->paginate($pageSize);
         return api_response($list);
     }
 
@@ -28,7 +53,9 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $result = Article::create($request->all());
+        $categoryId = $request->input('category_id');
+        $result['article'] = Article::create($request->all());
+        $result['article_category'] = ArticleCategory::where('id', $categoryId)->increment('count', 1);
         return api_response($result);
     }
 
@@ -40,7 +67,8 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        return api_response($article);
+        // _print($article->id);
+        return api_response($article->where('id', $article->id)->with(['user:id,name'])->with(['category:id,name'])->first());
     }
 
     /**

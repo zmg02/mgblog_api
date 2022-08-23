@@ -50,7 +50,6 @@ class UserController extends Controller
         if ($isAdmin) {
             $where['is_admin'] = $isAdmin;
         }
-        // $list = $userM->where($where)->where($orWhere)->toSql();
         $list = $userM->where($where)->where($orWhere)->paginate($pageSize);
         return api_response($list);
     }
@@ -171,23 +170,7 @@ class UserController extends Controller
 
         // 文件是否上传成功
         if ($file->isValid()) {
-            // 原文件名
-            $originalName = $file->getClientOriginalName();
-            // 扩展名
-            $ext = $file->getClientOriginalExtension();
-            // mimeType
-            $type = $file->getClientMimeType();
-            // 临时绝对路径
-            $realPath = $file->getRealPath();
-            // 组装文件名称
-            $fileName = md5(date('Y-m-d_H:i:s') . uniqid(). rand(1000, 9999)) . '.' . $ext;
-
-            $bool = Storage::disk('public')->put($fileName, file_get_contents($realPath));
-
-            if ($bool) {
-                $data = asset("storage/$fileName");
-                return api_response($data);
-            }
+            return upload_img($file, 'user');
         }
     }
 }

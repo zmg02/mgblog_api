@@ -33,6 +33,7 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::post('users/upload', 'UserController@upload');
+    Route::post('articles/upload', 'ArticleController@upload');
 });
 
 // 后台api,登录

@@ -32,7 +32,7 @@ class ArticleController extends Controller
         ->when($categoryId, function($query) use ($categoryId) {
             $query->where('category_id', $categoryId);
         })
-        ->when($status, function($query) use ($status) {
+        ->when(($status != null), function($query) use ($status) {
             $query->where('status', $status);
         })
         ->with(['user:id,name'])
@@ -94,5 +94,19 @@ class ArticleController extends Controller
     {
         $article->update(['status'=>0]);
         return api_response($article);
+    }
+    /**
+     * 上传主图
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function upload(Request $request)
+    {
+        $file = $request->file('file');
+        // 文件是否上传成功
+        if ($file->isValid()) {
+            return upload_img($file, 'article');
+        }
     }
 }

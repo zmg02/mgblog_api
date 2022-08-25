@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Illuminate\Support\Facades\Validator;
+
 class ArticleCategory extends BaseModel
 {
     protected $guarded = [
@@ -15,6 +17,22 @@ class ArticleCategory extends BaseModel
     protected $attributes = [
         'status' => 1,
     ];
+
+    protected $messages = [
+        'name.required' => '分类名称必须填写',
+        'name.unique' => '分类名称是唯一的',
+        'name.min' => '分类名称不小于2个字符',
+        'name.max' => '分类名称不大于100个字符',
+    ];
+
+    protected $rules = [
+        'name' => ['bail', 'required', 'unique:article_categories', 'min:2', 'max:100']
+    ];
+
+    public function validate($data)
+    {
+        return Validator::make($data, $this->rules, $this->messages);
+    }
 
     /**
      * 一对多

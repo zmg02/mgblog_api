@@ -35,9 +35,10 @@ class ArticleController extends Controller
         ->when(($status != null), function($query) use ($status) {
             $query->where('status', $status);
         })
-        ->with(['user:id,name'])
+        ->with(['user:id,name,avatar'])
         ->with(['category:id,name'])
-        ->orderBy('order', 'desc')
+        // ->orderBy('order', 'desc')
+        ->orderBy('id', 'desc')
         // ->toSql();
         ->paginate($pageSize);
        
@@ -68,7 +69,7 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         // _print($article->id);
-        return api_response($article->where('id', $article->id)->with(['user:id,name'])->with(['category:id,name'])->first());
+        return api_response($article->where('id', $article->id)->with(['user:id,name,avatar'])->with(['category:id,name'])->first());
     }
 
     /**

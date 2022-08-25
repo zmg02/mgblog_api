@@ -112,6 +112,17 @@ class UserController extends Controller
         return api_response(config('user.status'));
     }
     /**
+     * 作者
+     *
+     * @return void
+     */
+    public function authors()
+    {
+        $userM = new User();
+        $list = $userM->where('is_author', 1)->get();
+        return api_response($list);
+    }
+    /**
      * 批量操作
      *
      * @param [type] $request

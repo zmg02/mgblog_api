@@ -45,9 +45,10 @@ Route::group([
     // 用户
     Route::apiResource('users', 'UserController');
     Route::get('user/status', 'UserController@status');
-    Route::patch('users/verify', 'UserController@verify');
-    Route::patch('users/blacklist', 'UserController@blacklist');
-    Route::patch('users/destroy_selected', 'UserController@destroySelected');
+    Route::get('user/authors', 'UserController@authors')->name('users.authors');
+    Route::patch('user/verify', 'UserController@verify');
+    Route::patch('user/blacklist', 'UserController@blacklist');
+    Route::patch('user/destroy_selected', 'UserController@destroySelected');
     // 文章
     Route::apiResource('articles', 'ArticleController');
     // 文章分类

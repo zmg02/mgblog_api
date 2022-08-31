@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ArticlesTableSeeder extends Seeder
+class BannersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,7 +12,7 @@ class ArticlesTableSeeder extends Seeder
     public function run()
     {
         // 截断数据
-        App\Model\Article::truncate();
-        factory(App\Model\Article::class, 100)->create();
+        App\Model\Banner::truncate();
+        factory(App\Model\Banner::class, 5)->create();
     }
 }

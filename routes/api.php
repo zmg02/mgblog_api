@@ -69,6 +69,8 @@ Route::group([
     Route::apiResource('articles', 'ArticleController');
     // 文章分类
     Route::apiResource('article_categories', 'ArticleCategoryController');
+    // 轮播图
+    Route::apiResource('banners', 'BannerController');
 });
 
 

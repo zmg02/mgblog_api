@@ -42,6 +42,22 @@ Route::group([
     'namespace' => 'Admin\Api',
     'middleware' => 'auth:admin'
 ], function () {
+    // 权限 Todo
+    Route::get('permission', function (Request $request) {
+        $user = $request->user();
+        $permission = config('permission');
+        if ($user['id'] === 1) {
+            return api_response($permission['admin']);
+        } else {
+            return api_response($permission['vip']);
+        }
+    });
+    // 菜单 Todo
+    Route::get('menu', function () {
+        $menu = config('menu');
+        return api_response($menu);
+    });
+    
     // 用户
     Route::apiResource('users', 'UserController');
     Route::get('user/status', 'UserController@status');

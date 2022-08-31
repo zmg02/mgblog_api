@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Api;
 use App\Http\Controllers\Controller;
 use App\Model\ArticleCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleCategoryController extends Controller
 {
@@ -31,6 +32,12 @@ class ArticleCategoryController extends Controller
     public function store(Request $request)
     {
         $articleCategoryM = new ArticleCategory();
+        $validator = $articleCategoryM->validate($request->all());
+        
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+        
         $result = $articleCategoryM->create($request->all());
         return api_response($result);
     }
@@ -55,8 +62,14 @@ class ArticleCategoryController extends Controller
      */
     public function update(Request $request, ArticleCategory $articleCategory)
     {
-        $articleCategory->update($request->all());
-        return api_response($articleCategory);
+        $validator = $articleCategory->validate($request->all());
+        
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+
+        $result = $articleCategory->update($request->all());
+        return api_response($result);
     }
 
     /**

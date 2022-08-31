@@ -15,7 +15,7 @@ class CreateArticleCategoriesTable extends Migration
     {
         Schema::create('article_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name',100)->default('');
+            $table->string('name',100)->unique()->default('');
             $table->smallInteger('count')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->integer('create_time')->default(0);

@@ -58,6 +58,14 @@ class Handler extends ExceptionHandler
             return api_response(null, 404, '资源未找到');
         }
 
+        // return response()->json([
+        //     'code' => $exception->getCode() ?? 1,
+        //     'file' => $exception->getFile(), //获取出错误的文件
+        //     'line' => $exception->getLine(), //获取错误在哪一行
+        //     'message' => $exception->getMessage() ?? "error!",
+        //     'data' => []
+        // ]);
+
         return parent::render($request, $exception);
     }
 
@@ -71,7 +79,7 @@ class Handler extends ExceptionHandler
         //         in_array('admin', $guards) ? route('admin.login') : route('login')
         //     );
         return $request->expectsJson()
-            ? api_response(null, 401, '未认证1')
-            : api_response(null, 401, '未认证');
+            ? api_response(null, 401, '未登录')
+            : api_response(null, 401, '未认证！');
     }
 }

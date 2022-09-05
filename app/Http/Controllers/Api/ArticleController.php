@@ -11,17 +11,19 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $articleM = new Article();
-        $page = $request->input('page', 1);
-        $pageSize = $request->input('page_size', 10);
+        $pageSize = $request->input('page_size', 20);
 
-        $list = $articleM->getPageList($page, $pageSize);
+        $list = $articleM->with(['user:id,name,avatar'])
+            ->with(['category:id,name'])->select('*', 'default_img as src')->paginate($pageSize);
+
         return api_response($list);
-        // return Article::all();
     }
 
-    public function show(Article $article)
+    public function show($id)
     {
-        return api_response($article);
+        $articleM = new Article();
+        $info = $articleM->with(['user:id,name,avatar'])->with(['category:id,name'])->find($id)->toArray();
+        return api_response($info);
     }
 
     public function store(Request $request)

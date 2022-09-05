@@ -78,11 +78,16 @@ Route::group([
 
 // 前台api
 Route::namespace('Api')->prefix('v1')->group(function () {
+    Route::get('tests', function () {
+        $data = config('article');
+        return api_response($data);
+    });
     // 不用登录的api
     Route::get('articles', 'ArticleController@index');
     Route::get('articles/{article}', 'ArticleController@show');
     Route::get('articleCategories', 'ArticleCategoryController@index');
     Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
+    Route::get('banners', 'BannerController@index');
     // 需要登录的api
     Route::middleware('auth:api')->group(function () {
         Route::post('articles', 'ArticleController@store');

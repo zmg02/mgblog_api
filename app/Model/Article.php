@@ -55,7 +55,7 @@ class Article extends BaseModel
      */
     public function getCreateTimeAttribute()
     {
-        return date('Y-m-d H:i:s', $this->attributes['create_time']);
+        return date('Y 年 m 月 d 日', $this->attributes['create_time']);
     }
     /**
      * 设置创建时间属性

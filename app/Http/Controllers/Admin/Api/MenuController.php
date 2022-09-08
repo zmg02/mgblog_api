@@ -3,21 +3,31 @@
 namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\ArticleCategory;
+use App\Http\Traits\Tree;
+use App\Model\Menu;
 use Illuminate\Http\Request;
 
-class ArticleCategoryController extends Controller
+class MenuController extends Controller
 {
+    use Tree;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $articleCategoryM = new ArticleCategory();
-        $list = $articleCategoryM->where('status',1)->get();
-        return api_response($list);
+        $menuM = new Menu();
+        $status = $request->input('status');
+        $map = [];
+        if ($status == 1) {
+            $map['status'] = 1;
+        }
+        $menus = $menuM->where($map)->orderBy('order', 'asc')->get()->toArray();
+
+        $menuTrees = $this->menuTree($menus);
+        
+        return api_response($menuTrees);
     }
 
     /**
@@ -28,26 +38,13 @@ class ArticleCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $articleCategoryM = new ArticleCategory();
-        $validator = $articleCategoryM->validate($request->all());
-        
+        $menuM = new Menu();
+        $validator = $menuM->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
-        
-        $result = $articleCategoryM->create($request->all());
+        $result = $menuM->create($request->all());
         return api_response($result);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ArticleCategory $articleCategory)
-    {
-        return api_response($articleCategory);
     }
 
     /**
@@ -57,15 +54,14 @@ class ArticleCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ArticleCategory $articleCategory)
+    public function update(Request $request, Menu $menu)
     {
-        $validator = $articleCategory->validate($request->all());
-        
+        $validator = $menu->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
 
-        $result = $articleCategory->update($request->all());
+        $result = $menu->update($request->all());
         return api_response($result);
     }
 
@@ -77,8 +73,14 @@ class ArticleCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $articleCategoryM = new ArticleCategory();
-        $result = $articleCategoryM->where('id', $id)->update(['status'=>0]);
+        $menuM = new Menu();
+        $ids = $this->getAllChildrenId($menuM, $id);
+        if ($ids) {
+            array_push($ids, intval($id));
+        } else {
+            $ids = [intval($id)];
+        }
+        $result = $menuM->whereIn('id', $ids)->update(['status'=>0]);
         return api_response($result);
     }
 }

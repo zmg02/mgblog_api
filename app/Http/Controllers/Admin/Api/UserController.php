@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\Tree;
+use App\Model\Permission;
+use App\Model\Role;
 use App\Model\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    use Tree;
     /**
      * Display a listing of the resource.
      *
@@ -62,8 +67,38 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::create($request->all());
-        return api_response($user);
+        $userM = new User();
+        $rule = [
+            'name' => ['bail', 'required'],
+            // 'avatar' => ['required'],
+            'email' => [
+                'required',
+                'unique:users',
+                'email:filter'
+            ],
+            'password' => [
+                'required',
+                'between:3,20'
+            ]
+        ];
+        $validator = $userM->validate($request->all(), $rule);
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+
+        $data = $request->all();
+        $result = $userM->create([
+            "name" => $data['name'],
+            "email" => $data['email'],
+            "password" => Hash::make($data['password']),
+            "avatar" => $data['avatar'],
+            "desc" => $data['desc'],
+            "phone" => $data['phone'],
+            "is_admin" => $data['is_admin'],
+            "is_author" => $data['is_author'],
+            "status" => $data['status'],
+        ]);
+        return api_response($result);
     }
 
     /**
@@ -86,8 +121,21 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->update($request->all());
-        return api_response($user);
+        $rule = [
+            'name' => ['bail', 'required'],
+            'email' => [
+                'required',
+                'unique:users,email,' . $user->id,
+                'email:filter'
+            ],
+            // 'avatar' => ['required']
+        ];
+        $validator = $user->validate($request->all(), $rule);
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+        $result = $user->update($request->all());
+        return api_response($result);
     }
 
     /**
@@ -96,12 +144,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->update(['status'=>0]);
-        // $user->delete();
-        return api_response();
+        $userM = new User();
+        $result = $userM->where('id', $id)->update(['status'=>0]);
+        return api_response($result);
     }
+
     /**
      * 用户所有状态
      *
@@ -111,17 +160,7 @@ class UserController extends Controller
     {
         return api_response(config('user.status'));
     }
-    /**
-     * 作者
-     *
-     * @return void
-     */
-    public function authors()
-    {
-        $userM = new User();
-        $list = $userM->where('is_author', 1)->get();
-        return api_response($list);
-    }
+
     /**
      * 批量操作
      *
@@ -174,7 +213,12 @@ class UserController extends Controller
     {
         return $this->operation($request, 'destroySelected');
     }
-
+    /**
+     * 用户头像上传
+     *
+     * @param Request $request
+     * @return void
+     */
     public function upload(Request $request)
     {
         $file = $request->file('file');
@@ -184,4 +228,34 @@ class UserController extends Controller
             return upload_img($file, 'user');
         }
     }
+
+    /**
+     * 后台用户权限
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function permissions(Request $request)
+    {
+        $userM = new User();
+        $user = $request->user();
+        // 用户角色
+        $rolesData = $user->roles()->where('status', 1)->get();
+        if (!empty($rolesData)) {
+            // 角色权限
+            $rolePermissionsData = [];
+            foreach ($rolesData as $role) {
+                $rolePermissionsData[] = $role->permissions()->where('status', 1)->get()->toArray();
+            }
+        }
+        // 用户权限
+        $userPermissionsData = $user->permissions()->where('status', 1)->get()->toArray();
+        // 用户权限整合
+        $permissions = $userM->mergePermissions($rolePermissionsData, $userPermissionsData);
+        // 树形权限
+        $pTree = $this->permissionTree($permissions);
+
+        return api_response($pTree);
+    }
+    
 }

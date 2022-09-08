@@ -16,16 +16,6 @@ if (!function_exists('str_random')) {
     }
 }
 
-if (!function_exists('_print')) {
-    function _print($data)
-    {
-        echo '<pre>';
-        print_r($data);
-        echo '</pre>';
-        exit('打印完成');
-    }
-}
-
 if (!function_exists('api_response')) {
     function api_response($data = null, $code = 200, $message = 'success')
     {

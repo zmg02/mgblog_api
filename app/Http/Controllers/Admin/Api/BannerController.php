@@ -13,9 +13,11 @@ class BannerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list = Banner::all();
+        $bannerM = new Banner();
+        $perPage = $request->input('per_page', 10);
+        $list = $bannerM->paginate($perPage);
         return api_response($list);
     }
 
@@ -27,6 +29,12 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
+        $bannerM = new Banner();
+        $validator = $bannerM->validate($request->all());
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+
         $banner = Banner::create($request->all());
         return api_response($banner);
     }
@@ -49,9 +57,15 @@ class BannerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Banner $banner)
     {
-        //
+        $validator = $banner->validate($request->all());
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+
+        $result = $banner->update($request->all());
+        return api_response($result);
     }
 
     /**
@@ -60,9 +74,25 @@ class BannerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Banner $banner)
+    public function destroy($id)
     {
-        $banner->update(['status' => 0]);
-        return api_response();
+        $bannerM = new Banner();
+        $result = $bannerM->where('id', $id)->update(['status'=>0]);
+        return api_response($result);
+    }
+
+    /**
+     * 上传图片
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function upload(Request $request)
+    {
+        $file = $request->file('file');
+        // 文件是否上传成功
+        if ($file->isValid()) {
+            return upload_img($file, 'banner');
+        }
     }
 }

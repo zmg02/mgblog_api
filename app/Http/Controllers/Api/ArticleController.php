@@ -15,7 +15,6 @@ class ArticleController extends Controller
 
         $list = $articleM->with(['user:id,name,avatar'])
             ->with(['category:id,name'])->select('*', 'default_img as src')->paginate($pageSize);
-
         return api_response($list);
     }
 

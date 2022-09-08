@@ -3,20 +3,25 @@
 namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\ArticleCategory;
+use App\Http\Traits\Tree;
+use App\Model\Permission;
+use App\Model\Role;
 use Illuminate\Http\Request;
 
-class ArticleCategoryController extends Controller
+class RoleController extends Controller
 {
+    use Tree;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $articleCategoryM = new ArticleCategory();
-        $list = $articleCategoryM->where('status',1)->get();
+        $roleM = new Role();
+        $perPage = $request->input('per_page', 10);
+
+        $list = $roleM->paginate($perPage);
         return api_response($list);
     }
 
@@ -28,26 +33,14 @@ class ArticleCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $articleCategoryM = new ArticleCategory();
-        $validator = $articleCategoryM->validate($request->all());
-        
+        $roleM = new Role();
+        $validator = $roleM->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
-        
-        $result = $articleCategoryM->create($request->all());
-        return api_response($result);
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ArticleCategory $articleCategory)
-    {
-        return api_response($articleCategory);
+        $result = $roleM->create($request->all());
+        return api_response($result);
     }
 
     /**
@@ -57,15 +50,13 @@ class ArticleCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ArticleCategory $articleCategory)
+    public function update(Request $request, Role $role)
     {
-        $validator = $articleCategory->validate($request->all());
-        
+        $validator = $role->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
-
-        $result = $articleCategory->update($request->all());
+        $result = $role->update($request->all());
         return api_response($result);
     }
 
@@ -77,8 +68,9 @@ class ArticleCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $articleCategoryM = new ArticleCategory();
-        $result = $articleCategoryM->where('id', $id)->update(['status'=>0]);
+        $roleM = new Role();
+        $result = $roleM->where('id', $id)->update(['status'=>0]);
         return api_response($result);
     }
+
 }

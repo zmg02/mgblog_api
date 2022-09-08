@@ -24,32 +24,44 @@ class BaseModel extends Model
     const CREATED_AT = 'create_time';
     const UPDATED_AT = 'update_time';
 
-    /**重写分页方法 */
-    public function paginate($perPage = null, $columns = ['*'], $page = null, $pageName = 'page')
+    /**
+     * 设置注册时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function setCreateTimeAttribute($value)
     {
-        $page = $page ?: Paginator::resolveCurrentPage($pageName);
-
-        $perPage = $perPage ?: $this->model->getPerPage();
-
-        $results = ($total = $this->toBase()->getCountForPagination())
-            ? $this->forPage($page, $perPage)->get($columns)
-            : $this->model->newCollection();
-
-        $pages = ceil($total / $perPage);
-
-        $result = [
-            'total'         => $total,
-            'current_page'  => $page,
-            'page_size'     => $perPage,
-            'pages'         => $pages,
-            'list'          => $results
-        ];
-        return $result;
+        $this->attributes['create_time'] = is_int($value) ? $value : strtotime($value);
     }
-
-    // 分页
-    public function getPageList($page, $pageSize)
+    /**
+     * 获取注册时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getCreateTimeAttribute()
     {
-        return $this->paginate($pageSize, ['*'], $page, 'page');
+        return date('Y-m-d H:i:s', $this->attributes['create_time']);
+    }
+    /**
+     * 设置更新时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function setUpdateTimeAttribute($value)
+    {
+        $this->attributes['update_time'] = is_int($value) ? $value : strtotime($value);
+    }
+    /**
+     * 获取更新时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getUpdateTimeAttribute()
+    {
+        return date('Y-m-d H:i:s', $this->attributes['update_time']);
     }
 }

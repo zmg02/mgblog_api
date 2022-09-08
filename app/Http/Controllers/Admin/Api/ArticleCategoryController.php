@@ -16,7 +16,7 @@ class ArticleCategoryController extends Controller
     public function index()
     {
         $articleCategoryM = new ArticleCategory();
-        $list = $articleCategoryM->where('status',1)->get();
+        $list = $articleCategoryM->get();
         return api_response($list);
     }
 

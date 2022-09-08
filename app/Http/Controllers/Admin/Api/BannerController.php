@@ -17,7 +17,7 @@ class BannerController extends Controller
     {
         $bannerM = new Banner();
         $perPage = $request->input('per_page', 10);
-        $list = $bannerM->paginate($perPage);
+        $list = $bannerM->with(['article:*'])->paginate($perPage);
         return api_response($list);
     }
 

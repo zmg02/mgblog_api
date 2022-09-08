@@ -98,6 +98,62 @@ class AdminTablesSeeder extends Seeder
                 'http_path'     => '/article/category'
             ],
 
+            [
+                'parent_id'     => 0, //10
+                'name'          => '设置',
+                'slug'          => 'set',
+                'http_method'   => 'GET',
+                'http_path'     => '/set'
+            ],
+            [
+                'parent_id'     => 10,
+                'name'          => '角色',
+                'slug'          => 'role',
+                'http_method'   => 'GET',
+                'http_path'     => '/set/role'
+            ],
+            [
+                'parent_id'     => 10,
+                'name'          => '权限',
+                'slug'          => 'permission',
+                'http_method'   => 'GET',
+                'http_path'     => '/set/permission'
+            ],
+            [
+                'parent_id'     => 10,
+                'name'          => '菜单',
+                'slug'          => 'menu',
+                'http_method'   => 'GET',
+                'http_path'     => '/set/menu'
+            ],
+            [
+                'parent_id'     => 10,
+                'name'          => '默认',
+                'slug'          => 'default',
+                'http_method'   => 'GET',
+                'http_path'     => '/default'
+            ],
+            [
+                'parent_id'     => 10, // 15
+                'name'          => '前端设置',
+                'slug'          => 'www',
+                'http_method'   => 'GET',
+                'http_path'     => '/set/www'
+            ],
+            [
+                'parent_id'     => 15,
+                'name'          => '轮播图',
+                'slug'          => 'banner',
+                'http_method'   => 'GET',
+                'http_path'     => '/set/www/banner'
+            ],
+            [
+                'parent_id'     => 15,
+                'name'          => '照片墙',
+                'slug'          => 'instagram',
+                'http_method'   => 'GET',
+                'http_path'     => '/set/www/instagram'
+            ],
         ]);
         // 关联角色
         Role::first()->permissions()->save(Permission::first());
@@ -193,6 +249,87 @@ class AdminTablesSeeder extends Seeder
                 'title'     => '文章分类',
                 'icon'      => '',
                 'uri'       => '/article/category',
+                'order'     => 2,
+            ],
+
+            [
+                'parent_id' => 0,
+                'path'      => '/set',
+                'component' => 'layout',
+                'slug'      => 'Set',
+                'title'     => '设置',
+                'icon'      => 'el-icon-setting',
+                'uri'       => '/set',
+                'order'     => 1,
+            ],
+            [
+                'parent_id' => 10,
+                'path'      => 'role',
+                'component' => 'role',
+                'slug'      => 'Role',
+                'title'     => '角色',
+                'icon'      => 'el-icon-user',
+                'uri'       => '/set/role',
+                'order'     => 1,
+            ],
+            [
+                'parent_id' => 10,
+                'path'      => 'permission',
+                'component' => 'permission',
+                'slug'      => 'Permission',
+                'title'     => '权限',
+                'icon'      => 'el-icon-user',
+                'uri'       => '/set/permission',
+                'order'     => 2,
+            ],
+            [
+                'parent_id' => 10,
+                'path'      => 'menu',
+                'component' => 'menu',
+                'slug'      => 'Menu',
+                'title'     => '菜单',
+                'icon'      => 'el-icon-menu',
+                'uri'       => '/set/menu',
+                'order'     => 3,
+            ],
+            [
+                'parent_id' => 10,
+                'path'      => '/default',
+                'component' => 'default',
+                'slug'      => 'Default',
+                'title'     => '默认菜单',
+                'icon'      => 'el-icon-help',
+                'uri'       => '/default',
+                'order'     => 4,
+            ],
+            [
+                'parent_id' => 10,
+                'path'      => 'www',
+                'component' => 'www',
+                'slug'      => 'WWW',
+                'title'     => '前端设置',
+                'icon'      => 'el-icon-setting',
+                'uri'       => '/set/www',
+                'order'     => 5,
+            ],
+            [
+                'parent_id' => 15,
+                'path'      => 'banner',
+                'component' => 'banner',
+                'slug'      => 'Banner',
+                'title'     => '轮播图',
+                'icon'      => 'el-icon-picture-outline',
+                'uri'       => '/set/www/banner',
+                'order'     => 1,
+            ],
+            [
+                'parent_id' => 15,
+                'path'      => 'instagram',
+                'component' => 'instagram',
+                'slug'      => 'Instagram',
+                'title'     => '照片墙',
+                'icon'      => 'el-icon-picture',
+                'uri'       => '/set/www/instagram',
                 'order'     => 2,
             ],
         ]);

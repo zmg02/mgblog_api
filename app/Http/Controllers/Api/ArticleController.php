@@ -24,6 +24,7 @@ class ArticleController extends Controller
         $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($id)->toArray();
         return api_response($info);
     }
+
     public function getPrevArticle($id)
     {
         $articleM = new Article();
@@ -72,6 +73,31 @@ class ArticleController extends Controller
         $article->delete();
 
         return api_response();
-        // return response()->json(null, 204);
+    }
+
+    /**
+     * 最新帖子
+     */
+    public function last()
+    {
+        $articleM = new Article();
+
+        $list = $articleM->where('status', 1)->orderBy('create_time', 'desc')->with(['user:id,name,avatar'])
+        ->with(['category:id,name'])->select('*', 'default_img as src')->take(5)->get();
+
+        return api_response($list);
+    }
+
+    /**
+     * 最新帖子
+     */
+    public function hottest()
+    {
+        $articleM = new Article();
+
+        $list = $articleM->where('status', 1)->orderBy('praise_count', 'desc')->with(['user:id,name,avatar'])
+        ->with(['category:id,name'])->select('*', 'default_img as src')->take(5)->get();
+
+        return api_response($list);
     }
 }

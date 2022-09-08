@@ -92,12 +92,17 @@ Route::namespace('Api')->prefix('v1')->group(function () {
     });
     // 不用登录的api
     Route::get('articles', 'ArticleController@index');
+    Route::get('articles/last', 'ArticleController@last');
+    Route::get('articles/hottest', 'ArticleController@hottest');
     Route::get('articles/{article}', 'ArticleController@show');
     Route::get('articles/prev_article/{article}', 'ArticleController@getPrevArticle');
     Route::get('articles/next_article/{article}', 'ArticleController@getNextArticle');
     Route::get('articleCategories', 'ArticleCategoryController@index');
     Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
     Route::get('banners', 'BannerController@index');
+    // 文章评论
+    Route::get('articles/{article}/comments', 'ArticleCommentController@index')->name('articles.comments.index');
+
     // 需要登录的api
     Route::middleware('auth:api')->group(function () {
         Route::post('articles', 'ArticleController@store');
@@ -107,6 +112,7 @@ Route::namespace('Api')->prefix('v1')->group(function () {
         Route::post('articleCategories', 'ArticleCategoryController@store');
         Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
         Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
+        Route::apiResource('articles.comments', 'ArticleCommentController')->only(['store', 'destroy']);
     });
 });
 Route::namespace('Auth')->prefix('v1')->group(function () {

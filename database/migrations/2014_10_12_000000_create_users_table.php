@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->integer('last_login_time')->default(0);
             $table->string('last_login_ip', 30)->default('')->nullable();
             $table->rememberToken();
+            $table->string('api_token', 60)->unique()->nullable();
             $table->integer('create_time')->default(0);
             $table->integer('update_time')->default(0);
         });

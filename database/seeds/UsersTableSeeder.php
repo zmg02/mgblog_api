@@ -25,7 +25,6 @@ class UsersTableSeeder extends Seeder
 
         User::create([
             'name' => 'admin',
-            // 'avatar' => 'https://via.placeholder.com/500x500.png/003366?text=dogs+Faker+vitae',
             'avatar' => $faker->imageUrl(500, 500, 'dogs', true, 'Faker'),
             'desc' => '时光旅行者',
             'email' => 'admin@zmg2022.cn',

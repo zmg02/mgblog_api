@@ -33,6 +33,7 @@ $factory->define(User::class, function (Faker $faker) {
         'last_login_time' => $faker->unixTime('now'),
         'last_login_ip' => $faker->ipv4,
         'remember_token' => Str::random(10),
+        'api_token' => Str::random(10),
         'create_time' => $faker->unixTime('now'),
         'update_time' => $faker->unixTime('now')
     ];

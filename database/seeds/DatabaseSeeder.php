@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ArticleTagsTableSeeder::class,
             TagsTableSeeder::class,
             BannersTableSeeder::class,
+            AdminTablesSeeder::class,
         ]);
     }
 }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\ArticleCategory;
+use App\Http\Traits\Tree;
+use App\Model\Permission;
 use Illuminate\Http\Request;
 
-class ArticleCategoryController extends Controller
+class PermissionController extends Controller
 {
+    use Tree;
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +17,14 @@ class ArticleCategoryController extends Controller
      */
     public function index()
     {
-        $articleCategoryM = new ArticleCategory();
-        $list = $articleCategoryM->where('status',1)->get();
-        return api_response($list);
+        $permissionM = new Permission();
+        $map = [];
+        // $map[] = ['status','=', 1];
+        $map[] = ['slug','<>', '*'];
+        $permissions = $permissionM->where($map)->get()->toArray();
+        // 树形结构
+        $data = $this->permissionTree($permissions);
+        return api_response($data);
     }
 
     /**
@@ -28,26 +35,13 @@ class ArticleCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $articleCategoryM = new ArticleCategory();
-        $validator = $articleCategoryM->validate($request->all());
-        
+        $permissionM = new Permission();
+        $validator = $permissionM->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
-        
-        $result = $articleCategoryM->create($request->all());
+        $result = $permissionM->create($request->all());
         return api_response($result);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ArticleCategory $articleCategory)
-    {
-        return api_response($articleCategory);
     }
 
     /**
@@ -57,15 +51,14 @@ class ArticleCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ArticleCategory $articleCategory)
+    public function update(Request $request, Permission $permission)
     {
-        $validator = $articleCategory->validate($request->all());
-        
+        $validator = $permission->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
 
-        $result = $articleCategory->update($request->all());
+        $result = $permission->update($request->all());
         return api_response($result);
     }
 
@@ -77,8 +70,8 @@ class ArticleCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $articleCategoryM = new ArticleCategory();
-        $result = $articleCategoryM->where('id', $id)->update(['status'=>0]);
+        $permissionM = new Permission();
+        $result = $permissionM->where('id', $id)->update(['status'=>0]);
         return api_response($result);
     }
 }

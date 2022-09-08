@@ -25,15 +25,14 @@ class AuthController extends Controller
      */
     public function login()
     {
-        // $credentials = request(['email', 'password']);
         $credentials = request(['name', 'password']);
 
         if (!$token = auth('admin')->attempt($credentials)) {
-            return api_response(null, 401, 'Unauthorized');
+            return api_response(null, 401, '登录失败，请重新填写用户及密码');
         }
         
         if (!auth('admin')->check() || auth('admin')->user()->status != 1 && auth('admin')->user()->is_admin != 1) {
-            return api_response(null, 401, 'Unauthorized');
+            return api_response(null, 401, '登录失败，请重新填写用户及密码');
         }
 
         return api_response($this->respondWithToken($token));
@@ -84,7 +83,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'expires_in' => auth('admin')->factory()->getTTL() * 60
+            'expires_in' => auth('admin')->factory()->getTTL() * 60 * 5 // 5小时有效期
         ]);
     }
 }

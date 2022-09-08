@@ -29,11 +29,9 @@ Route::group([
     'namespace' => 'Admin\Api'
 ], function () {
     Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-    Route::post('users/upload', 'UserController@upload');
     Route::post('articles/upload', 'ArticleController@upload');
+    Route::post('banners/upload', 'BannerController@upload');
+    Route::post('users/upload', 'UserController@upload');
 });
 
 // 后台api,登录
@@ -42,35 +40,45 @@ Route::group([
     'namespace' => 'Admin\Api',
     'middleware' => 'auth:admin'
 ], function () {
-    // 权限 Todo
-    Route::get('permission', function (Request $request) {
-        $user = $request->user();
-        $permission = config('permission');
-        if ($user['id'] === 1) {
-            return api_response($permission['admin']);
-        } else {
-            return api_response($permission['vip']);
-        }
-    });
-    // 菜单 Todo
-    Route::get('menu', function () {
-        $menu = config('menu');
-        return api_response($menu);
-    });
+    // 运行日志
+    Route::get('operation_logs', 'OperationLogController@index');
     
-    // 用户
-    Route::apiResource('users', 'UserController');
-    Route::get('user/status', 'UserController@status');
-    Route::get('user/authors', 'UserController@authors')->name('users.authors');
-    Route::patch('user/verify', 'UserController@verify');
-    Route::patch('user/blacklist', 'UserController@blacklist');
-    Route::patch('user/destroy_selected', 'UserController@destroySelected');
-    // 文章
-    Route::apiResource('articles', 'ArticleController');
-    // 文章分类
-    Route::apiResource('article_categories', 'ArticleCategoryController');
-    // 轮播图
-    Route::apiResource('banners', 'BannerController');
+    // 用户相关数据及操作
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+    Route::get('users/permissions', 'UserController@permissions');
+    Route::get('users/status', 'UserController@status');
+    Route::patch('users/verify', 'UserController@verify');
+    Route::patch('users/blacklist', 'UserController@blacklist');
+    Route::patch('users/destroy_selected', 'UserController@destroySelected');
+    // 角色未添加的用户
+    Route::get('roles/{role}/admin', 'RoleUserController@admin');
+
+    // 菜单
+    Route::apiResource('menus', 'MenuController')->except(['show']);
+    // 权限
+    Route::apiResource('permissions', 'PermissionController')->except(['show']);
+    // 角色
+    Route::apiResource('roles', 'RoleController')->except(['show']);
+    // 角色权限
+    Route::apiResource('roles.permissions', 'RolePermissionController')->except(['show', 'update', 'destroy']);
+    // 角色用户
+    Route::apiResource('roles.users', 'RoleUserController')->except(['show', 'update']);
+    // 用户权限
+    Route::apiResource('users.permissions', 'UserPermissionController')->except(['show', 'update', 'destroy']);
+
+    /**
+     * 控制器
+     * 用户;文章;文章分类;轮播图
+     */
+    Route::apiResources([
+        'users' => 'UserController',
+        'articles' => 'ArticleController',
+        'article_categories' => 'ArticleCategoryController',
+        'banners' => 'BannerController',
+    ]);
+
 });
 
 

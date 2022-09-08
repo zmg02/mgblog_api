@@ -11,12 +11,10 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $articleM = new Article();
-        $page = $request->input('page', 1);
         $pageSize = $request->input('page_size', 10);
 
-        $list = $articleM->getPageList($page, $pageSize);
+        $list = $articleM->paginate($pageSize);
         return api_response($list);
-        // return Article::all();
     }
 
     public function show(Article $article)

@@ -21,17 +21,25 @@ class ArticleCategory extends BaseModel
     protected $messages = [
         'name.required' => '分类名称必须填写',
         'name.unique' => '分类名称是唯一的',
-        'name.min' => '分类名称不小于2个字符',
-        'name.max' => '分类名称不大于100个字符',
+        'name.between' => '分类名称必须在2到100个字符之间'
     ];
 
-    protected $rules = [
-        'name' => ['bail', 'required', 'unique:article_categories', 'min:2', 'max:100']
-    ];
-
+    /**
+     * 表单验证
+     *
+     * @param [type] $data
+     * @return void
+     */
     public function validate($data)
     {
-        return Validator::make($data, $this->rules, $this->messages);
+        return Validator::make($data, [
+            'name' => [
+                'bail',
+                'required',
+                'unique:article_categories,' . $this->id,
+                'between:2,100'
+            ]
+        ], $this->messages);
     }
 
     /**
@@ -41,34 +49,5 @@ class ArticleCategory extends BaseModel
     public function article()
     {
         return $this->hasMany('App\Model\Article');
-    }
-
-    /**
-     * 获取创建时间属性
-     */
-    public function getCreateTimeAttribute()
-    {
-        return date('Y-m-d H:i:s', $this->attributes['create_time']);
-    }
-    /**
-     * 设置创建时间属性
-     */
-    public function setCreateTimeAttribute($value)
-    {
-        $this->attributes['create_time'] = is_int($value) ? $value : strtotime($value);
-    }
-    /**
-     * 获取修改时间属性
-     */
-    public function getUpdateTimeAttribute()
-    {
-        return date('Y-m-d H:i:s', $this->attributes['update_time']);
-    }
-    /**
-     * 设置修改时间属性
-     */
-    public function setUpdateTimeAttribute($value)
-    {
-        $this->attributes['update_time'] = is_int($value) ? $value : strtotime($value);
     }
 }

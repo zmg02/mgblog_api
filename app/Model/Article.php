@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Illuminate\Support\Facades\Validator;
+
 class Article extends BaseModel
 {
     /**
@@ -50,32 +52,33 @@ class Article extends BaseModel
         return $this->belongsToMany('App\Model\Tag');
     }
 
+    protected $messages = [
+        'title.required' => '标题必须填写',
+        'title.between' => '标题必须在2到100个字符之间',
+        'user_id.required' => '作者必须填写',
+        'default_img.required' => '主图必须上传',
+        'content.required' => '内容必须填写',
+        'content.min' => '标题不小于10个字符',
+        'category_id.required' => '分类必须选择',
+        'status.required' => '状态必须选择',
+    ];
+
+    protected $rules = [
+        'title' => ['bail', 'required', 'between:2,100'],
+        'user_id' => ['bail', 'required'],
+        'default_img' => ['bail', 'required'],
+        'content' => ['bail', 'required', 'min:10'],
+        'category_id' => ['bail', 'required'],
+        'status' => ['bail', 'required'],
+    ];
     /**
-     * 获取创建时间属性
+     * 表单验证
+     *
+     * @param [type] $data
+     * @return void
      */
-    public function getCreateTimeAttribute()
+    public function validate($data)
     {
-        return date('Y-m-d H:i:s', $this->attributes['create_time']);
-    }
-    /**
-     * 设置创建时间属性
-     */
-    public function setCreateTimeAttribute($value)
-    {
-        $this->attributes['create_time'] = is_int($value) ? $value : strtotime($value);
-    }
-    /**
-     * 获取修改时间属性
-     */
-    public function getUpdateTimeAttribute()
-    {
-        return date('Y-m-d H:i:s', $this->attributes['update_time']);
-    }
-    /**
-     * 设置修改时间属性
-     */
-    public function setUpdateTimeAttribute($value)
-    {
-        $this->attributes['update_time'] = is_int($value) ? $value : strtotime($value);
+        return Validator::make($data, $this->rules, $this->messages);
     }
 }

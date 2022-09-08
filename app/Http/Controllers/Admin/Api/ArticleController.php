@@ -54,7 +54,13 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $articleM = new Article();
         $categoryId = $request->input('category_id');
+        $validator = $articleM->validate($request->all());
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+
         $result['article'] = Article::create($request->all());
         $result['article_category'] = ArticleCategory::where('id', $categoryId)->increment('count', 1);
         return api_response($result);
@@ -68,7 +74,6 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        // _print($article->id);
         return api_response($article->where('id', $article->id)->with(['user:id,name,avatar'])->with(['category:id,name'])->first());
     }
 
@@ -81,8 +86,13 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        $article->update($request->all());
-        return api_response($article);
+        $validator = $article->validate($request->all());
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
+
+        $result = $article->update($request->all());
+        return api_response($result);
     }
 
     /**
@@ -91,10 +101,11 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy($id)
     {
-        $article->update(['status'=>0]);
-        return api_response($article);
+        $articleM = new Article();
+        $result = $articleM->where('id', $id)->update(['status'=>0]);
+        return api_response($result);
     }
     /**
      * 上传主图

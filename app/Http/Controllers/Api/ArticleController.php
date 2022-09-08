@@ -21,7 +21,27 @@ class ArticleController extends Controller
     public function show($id)
     {
         $articleM = new Article();
-        $info = $articleM->with(['user:id,name,avatar'])->with(['category:id,name'])->find($id)->toArray();
+        $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($id)->toArray();
+        return api_response($info);
+    }
+    public function getPrevArticle($id)
+    {
+        $articleM = new Article();
+        $preId = $articleM->where('id', '<', $id)->max('id');
+        if (!$preId) {
+            $preId = $articleM->max('id');
+        }
+        $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($preId);
+        return api_response($info);
+    }
+    public function getNextArticle($id)
+    {
+        $articleM = new Article();
+        $nextId = $articleM->where('id', '>', $id)->min('id');
+        if (!$nextId) {
+            $nextId = 1;
+        }
+        $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($nextId);
         return api_response($info);
     }
 

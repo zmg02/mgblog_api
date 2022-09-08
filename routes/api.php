@@ -93,6 +93,8 @@ Route::namespace('Api')->prefix('v1')->group(function () {
     // 不用登录的api
     Route::get('articles', 'ArticleController@index');
     Route::get('articles/{article}', 'ArticleController@show');
+    Route::get('articles/prev_article/{article}', 'ArticleController@getPrevArticle');
+    Route::get('articles/next_article/{article}', 'ArticleController@getNextArticle');
     Route::get('articleCategories', 'ArticleCategoryController@index');
     Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
     Route::get('banners', 'BannerController@index');

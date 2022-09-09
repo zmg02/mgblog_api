@@ -36,7 +36,7 @@ class ArticleCategory extends BaseModel
             'name' => [
                 'bail',
                 'required',
-                'unique:article_categories,' . $this->id,
+                'unique:article_categories,name,' . $this->id,
                 'between:2,100'
             ]
         ], $this->messages);

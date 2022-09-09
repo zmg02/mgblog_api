@@ -37,4 +37,12 @@ class Banner extends BaseModel
     {
         return Validator::make($data, $this->rules, $this->messages);
     }
+    /**
+     * 一对一（反向）
+     * 获取文章此文章的轮播图
+     */
+    public function article()
+    {
+        return $this->belongsTo('App\Model\Article');
+    }
 }

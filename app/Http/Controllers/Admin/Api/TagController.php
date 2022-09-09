@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\ArticleCategory;
+use App\Model\Tag;
 use Illuminate\Http\Request;
 
-class ArticleCategoryController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,14 @@ class ArticleCategoryController extends Controller
      */
     public function index()
     {
-        $articleCategoryM = new ArticleCategory();
-        $list = $articleCategoryM->get();
+        $tagM = new Tag();
+        // $tags = $tagM->get();
+        // foreach ($tags as $tag) {
+        //     $articles = $tag->article()->get();
+        //     dd($articles);
+        // }
+
+        $list = $tagM->withCount('article')->get();
         return api_response($list);
     }
 
@@ -28,14 +34,14 @@ class ArticleCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $articleCategoryM = new ArticleCategory();
-        $validator = $articleCategoryM->validate($request->all());
+        $tagM = new Tag();
+        $validator = $tagM->validate($request->all());
         
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
         
-        $result = $articleCategoryM->create($request->all());
+        $result = $tagM->create($request->all());
         return api_response($result);
     }
 
@@ -46,15 +52,15 @@ class ArticleCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ArticleCategory $articleCategory)
+    public function update(Request $request, Tag $tag)
     {
-        $validator = $articleCategory->validate($request->all());
+        $validator = $tag->validate($request->all());
         
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
 
-        $result = $articleCategory->update($request->all());
+        $result = $tag->update($request->all());
         return api_response($result);
     }
 
@@ -66,8 +72,8 @@ class ArticleCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $articleCategoryM = new ArticleCategory();
-        $result = $articleCategoryM->where('id', $id)->update(['status'=>0]);
+        $tagM = new Tag();
+        $result = $tagM->where('id', $id)->update(['status'=>0]);
         return api_response($result);
     }
 }

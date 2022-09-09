@@ -42,6 +42,14 @@ class Article extends BaseModel
     {
         return $this->belongsTo('App\Model\ArticleCategory');
     }
+    /**
+     * 一对一
+     * 获取文章此文章的轮播图
+     */
+    public function banner()
+    {
+        return $this->hasOne('App\Model\Banner');
+    }
 
     /**
      * 多对多
@@ -49,7 +57,7 @@ class Article extends BaseModel
      */
     public function tag()
     {
-        return $this->belongsToMany('App\Model\Tag');
+        return $this->belongsToMany('App\Model\Tag', 'article_tags');
     }
 
     protected $messages = [

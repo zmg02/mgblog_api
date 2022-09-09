@@ -52,8 +52,10 @@ Route::group([
     Route::patch('users/verify', 'UserController@verify');
     Route::patch('users/blacklist', 'UserController@blacklist');
     Route::patch('users/destroy_selected', 'UserController@destroySelected');
+    Route::get('users/authors', 'UserController@authors');
     // 角色未添加的用户
     Route::get('roles/{role}/admin', 'RoleUserController@admin');
+    Route::get('articles/banner', 'ArticleController@banner');
 
     // 菜单
     Route::apiResource('menus', 'MenuController')->except(['show']);
@@ -61,6 +63,12 @@ Route::group([
     Route::apiResource('permissions', 'PermissionController')->except(['show']);
     // 角色
     Route::apiResource('roles', 'RoleController')->except(['show']);
+    // 文章分类
+    Route::apiResource('article_categories', 'ArticleCategoryController')->except(['show']);
+    // 轮播图
+    Route::apiResource('banners', 'BannerController')->except(['show']);
+    // 标签
+    Route::apiResource('tags', 'TagController')->except(['show']);
     // 角色权限
     Route::apiResource('roles.permissions', 'RolePermissionController')->except(['show', 'update', 'destroy']);
     // 角色用户
@@ -70,15 +78,12 @@ Route::group([
 
     /**
      * 控制器
-     * 用户;文章;文章分类;轮播图
+     * 用户;文章;
      */
     Route::apiResources([
         'users' => 'UserController',
         'articles' => 'ArticleController',
-        'article_categories' => 'ArticleCategoryController',
-        'banners' => 'BannerController',
     ]);
-
 });
 
 

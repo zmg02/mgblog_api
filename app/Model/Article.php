@@ -57,7 +57,7 @@ class Article extends BaseModel
      */
     public function tag()
     {
-        return $this->belongsToMany('App\Model\Tag');
+        return $this->belongsToMany('App\Model\Tag', 'article_tags');
     }
 
     protected $messages = [

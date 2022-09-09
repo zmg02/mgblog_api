@@ -162,6 +162,18 @@ class UserController extends Controller
     }
 
     /**
+     * 后台创建文章时使用
+     *
+     * @return void
+     */
+    public function authors()
+    {
+        $userM = new User();
+        $list = $userM->where('is_author', 1)->where('status', 1)->get()->toArray();
+        return api_response($list);
+    }
+
+    /**
      * 批量操作
      *
      * @param [type] $request

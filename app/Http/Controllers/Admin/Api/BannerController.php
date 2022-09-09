@@ -17,7 +17,15 @@ class BannerController extends Controller
     {
         $bannerM = new Banner();
         $perPage = $request->input('per_page', 10);
-        $list = $bannerM->with(['article:*'])->paginate($perPage);
+        $keywords = $request->input('keywords');
+        $list = $bannerM->when($keywords, function($query) use ($keywords) {
+            $query->whereHas('article', function ($query) use ($keywords) {
+                $query->where('title', 'like', "%{$keywords}%")
+                ->orWhereHas('category', function ($query) use ($keywords) {
+                    $query->where('name', 'like', "%{$keywords}%");
+                });
+            });
+        })->with(['article:*', 'article.category'])->paginate($perPage);
         return api_response($list);
     }
 
@@ -37,17 +45,6 @@ class BannerController extends Controller
 
         $banner = Banner::create($request->all());
         return api_response($banner);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

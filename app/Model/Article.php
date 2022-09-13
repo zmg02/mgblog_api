@@ -89,4 +89,5 @@ class Article extends BaseModel
     {
         return Validator::make($data, $this->rules, $this->messages);
     }
+
 }

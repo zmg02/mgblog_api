@@ -11,15 +11,39 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $articleM = new Article();
-        $pageSize = $request->input('page_size', 10);
+        $pageSize = $request->input('page_size', 20);
 
-        $list = $articleM->paginate($pageSize);
+        $list = $articleM->with(['user:id,name,avatar'])
+            ->with(['category:id,name'])->select('*', 'default_img as src')->paginate($pageSize);
         return api_response($list);
     }
 
-    public function show(Article $article)
+    public function show($id)
     {
-        return api_response($article);
+        $articleM = new Article();
+        $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($id)->toArray();
+        return api_response($info);
+    }
+
+    public function getPrevArticle($id)
+    {
+        $articleM = new Article();
+        $preId = $articleM->where('id', '<', $id)->max('id');
+        if (!$preId) {
+            $preId = $articleM->max('id');
+        }
+        $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($preId);
+        return api_response($info);
+    }
+    public function getNextArticle($id)
+    {
+        $articleM = new Article();
+        $nextId = $articleM->where('id', '>', $id)->min('id');
+        if (!$nextId) {
+            $nextId = 1;
+        }
+        $info = $articleM->with(['user:*'])->with(['category:id,name'])->find($nextId);
+        return api_response($info);
     }
 
     public function store(Request $request)
@@ -49,6 +73,31 @@ class ArticleController extends Controller
         $article->delete();
 
         return api_response();
-        // return response()->json(null, 204);
+    }
+
+    /**
+     * 最新帖子
+     */
+    public function last()
+    {
+        $articleM = new Article();
+
+        $list = $articleM->where('status', 1)->orderBy('create_time', 'desc')->with(['user:id,name,avatar'])
+        ->with(['category:id,name'])->select('*', 'default_img as src')->take(5)->get();
+
+        return api_response($list);
+    }
+
+    /**
+     * 最新帖子
+     */
+    public function hottest()
+    {
+        $articleM = new Article();
+
+        $list = $articleM->where('status', 1)->orderBy('praise_count', 'desc')->with(['user:id,name,avatar'])
+        ->with(['category:id,name'])->select('*', 'default_img as src')->take(5)->get();
+
+        return api_response($list);
     }
 }

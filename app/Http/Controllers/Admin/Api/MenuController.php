@@ -43,6 +43,7 @@ class MenuController extends Controller
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
+
         $result = $menuM->create($request->all());
         return api_response($result);
     }

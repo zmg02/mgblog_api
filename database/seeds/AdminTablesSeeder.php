@@ -99,60 +99,75 @@ class AdminTablesSeeder extends Seeder
             ],
 
             [
-                'parent_id'     => 0, //10
+                'parent_id'     => 7,
+                'name'          => '标签',
+                'slug'          => 'tag',
+                'http_method'   => 'GET',
+                'http_path'     => '/article/tag'
+            ],
+
+            [
+                'parent_id'     => 0, //11
                 'name'          => '设置',
                 'slug'          => 'set',
                 'http_method'   => 'GET',
                 'http_path'     => '/set'
             ],
             [
-                'parent_id'     => 10,
+                'parent_id'     => 11,
                 'name'          => '角色',
                 'slug'          => 'role',
                 'http_method'   => 'GET',
                 'http_path'     => '/set/role'
             ],
             [
-                'parent_id'     => 10,
+                'parent_id'     => 11,
                 'name'          => '权限',
                 'slug'          => 'permission',
                 'http_method'   => 'GET',
                 'http_path'     => '/set/permission'
             ],
             [
-                'parent_id'     => 10,
+                'parent_id'     => 11,
                 'name'          => '菜单',
                 'slug'          => 'menu',
                 'http_method'   => 'GET',
                 'http_path'     => '/set/menu'
             ],
             [
-                'parent_id'     => 10,
+                'parent_id'     => 11,
                 'name'          => '默认',
                 'slug'          => 'default',
                 'http_method'   => 'GET',
                 'http_path'     => '/default'
             ],
             [
-                'parent_id'     => 10, // 15
+                'parent_id'     => 11, // 15
                 'name'          => '前端设置',
                 'slug'          => 'www',
                 'http_method'   => 'GET',
                 'http_path'     => '/set/www'
             ],
             [
-                'parent_id'     => 15,
+                'parent_id'     => 16,
                 'name'          => '轮播图',
                 'slug'          => 'banner',
                 'http_method'   => 'GET',
                 'http_path'     => '/set/www/banner'
             ],
             [
-                'parent_id'     => 15,
+                'parent_id'     => 16,
                 'name'          => '照片墙',
                 'slug'          => 'instagram',
                 'http_method'   => 'GET',
                 'http_path'     => '/set/www/instagram'
+            ],
+            [
+                'parent_id'     => 7,
+                'name'          => '文章评论',
+                'slug'          => 'comment',
+                'http_method'   => 'GET',
+                'http_path'     => '/article/comment'
             ],
         ]);
         // 关联角色
@@ -170,6 +185,7 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => '',
                 'uri'       => '/dashboard',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 1,
@@ -180,6 +196,7 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'dashboard',
                 'uri'       => '/dashboard',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 0,
@@ -190,6 +207,7 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-user',
                 'uri'       => '/member',
                 'order'     => 2,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 3,
@@ -197,9 +215,10 @@ class AdminTablesSeeder extends Seeder
                 'component' => 'user',
                 'slug'      => 'User',
                 'title'     => '用户',
-                'icon'      => '',
+                'icon'      => 'el-icon-user',
                 'uri'       => '/member/user',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 3,
@@ -207,9 +226,10 @@ class AdminTablesSeeder extends Seeder
                 'component' => 'author',
                 'slug'      => 'Author',
                 'title'     => '作者',
-                'icon'      => '',
+                'icon'      => 'el-icon-user-solid',
                 'uri'       => '/member/author',
                 'order'     => 2,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 3,
@@ -217,9 +237,10 @@ class AdminTablesSeeder extends Seeder
                 'component' => 'admin',
                 'slug'      => 'Admin',
                 'title'     => '管理员',
-                'icon'      => '',
+                'icon'      => 'el-icon-s-custom',
                 'uri'       => '/member/admin',
                 'order'     => 3,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 0,
@@ -230,6 +251,7 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-postcard',
                 'uri'       => '/article',
                 'order'     => 3,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 7,
@@ -237,9 +259,10 @@ class AdminTablesSeeder extends Seeder
                 'component' => 'article',
                 'slug'      => 'List',
                 'title'     => '文章列表',
-                'icon'      => '',
+                'icon'      => 'el-icon-postcard',
                 'uri'       => '/article/list',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
                 'parent_id' => 7,
@@ -247,9 +270,21 @@ class AdminTablesSeeder extends Seeder
                 'component' => 'category',
                 'slug'      => 'Category',
                 'title'     => '文章分类',
-                'icon'      => '',
+                'icon'      => 'el-icon-sort',
                 'uri'       => '/article/category',
                 'order'     => 2,
+                'hidden'    => 0,
+            ],
+            [
+                'parent_id' => 7,
+                'path'      => 'tag',
+                'component' => 'tag',
+                'slug'      => 'Tag',
+                'title'     => '标签',
+                'icon'      => 'el-icon-collection-tag',
+                'uri'       => '/article/tag',
+                'order'     => 3,
+                'hidden'    => 0,
             ],
 
             [
@@ -261,9 +296,10 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-setting',
                 'uri'       => '/set',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 10,
+                'parent_id' => 11,
                 'path'      => 'role',
                 'component' => 'role',
                 'slug'      => 'Role',
@@ -271,19 +307,21 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-user',
                 'uri'       => '/set/role',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 10,
+                'parent_id' => 11,
                 'path'      => 'permission',
                 'component' => 'permission',
                 'slug'      => 'Permission',
                 'title'     => '权限',
-                'icon'      => 'el-icon-user',
+                'icon'      => 'el-icon-check',
                 'uri'       => '/set/permission',
                 'order'     => 2,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 10,
+                'parent_id' => 11,
                 'path'      => 'menu',
                 'component' => 'menu',
                 'slug'      => 'Menu',
@@ -291,9 +329,10 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-menu',
                 'uri'       => '/set/menu',
                 'order'     => 3,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 10,
+                'parent_id' => 11,
                 'path'      => '/default',
                 'component' => 'default',
                 'slug'      => 'Default',
@@ -301,9 +340,10 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-help',
                 'uri'       => '/default',
                 'order'     => 4,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 10,
+                'parent_id' => 11,
                 'path'      => 'www',
                 'component' => 'www',
                 'slug'      => 'WWW',
@@ -311,9 +351,10 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-setting',
                 'uri'       => '/set/www',
                 'order'     => 5,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 15,
+                'parent_id' => 16,
                 'path'      => 'banner',
                 'component' => 'banner',
                 'slug'      => 'Banner',
@@ -321,9 +362,10 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-picture-outline',
                 'uri'       => '/set/www/banner',
                 'order'     => 1,
+                'hidden'    => 0,
             ],
             [
-                'parent_id' => 15,
+                'parent_id' => 16,
                 'path'      => 'instagram',
                 'component' => 'instagram',
                 'slug'      => 'Instagram',
@@ -331,6 +373,19 @@ class AdminTablesSeeder extends Seeder
                 'icon'      => 'el-icon-picture',
                 'uri'       => '/set/www/instagram',
                 'order'     => 2,
+                'hidden'    => 0,
+            ],
+
+            [
+                'parent_id' => 7,
+                'path'      => 'comment',
+                'component' => 'comment',
+                'slug'      => 'Comment',
+                'title'     => '文章评论',
+                'icon'      => '',
+                'uri'       => '/article/comment',
+                'order'     => 0,
+                'hidden'    => 1,
             ],
         ]);
     }

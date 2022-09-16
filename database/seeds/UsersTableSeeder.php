@@ -13,9 +13,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        // factory(App\Model\User::class, 50)->create()->each(function ($user) {
-        //     $user->article()->save(factory(App\Model\Article::class)->make());
-        // });
         // 截断数据
         User::truncate();
 
@@ -33,5 +30,14 @@ class UsersTableSeeder extends Seeder
         ]);
         
         factory(App\Model\User::class, 50)->create();
+        // factory(App\Model\User::class, 50)->create()->each(function ($user) {
+        //     $user->article()->save(factory(App\Model\Article::class)->make());
+        // });
+        // factory(App\Model\User::class, 50)->create()->each(function ($user) {
+        //     $user->article()->save(factory(App\Model\Article::class)->create()->each(function ($article) {
+        //         $article->comment()->save(factory(App\Model\Comment::class)->make());
+        //         $article->tag()->save(factory(App\Model\ArticleTag::class)->make());
+        //     }));
+        // });
     }
 }

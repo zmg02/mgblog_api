@@ -23,6 +23,6 @@ class Instagram extends BaseModel
      */
     public function tag()
     {
-        return $this->belongsToMany('App\Model\Tag');
+        return $this->belongsToMany('App\Model\Tag', 'instagram_tags');
     }
 }

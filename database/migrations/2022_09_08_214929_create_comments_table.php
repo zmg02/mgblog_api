@@ -18,7 +18,7 @@ class CreateCommentsTable extends Migration
             $table->integer('pid')->default(0)->comment('父节点评论');
             $table->integer('article_id')->default(0);
             $table->integer('user_id')->default(0);
-            $table->string('content');
+            $table->string('content')->default('');
             $table->tinyInteger('order')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->integer('create_time')->default(0);

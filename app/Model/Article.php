@@ -43,6 +43,14 @@ class Article extends BaseModel
         return $this->belongsTo('App\Model\ArticleCategory');
     }
     /**
+     * 一对多
+     * 一个文章多个评论
+     */
+    public function comment()
+    {
+        return $this->hasMany('App\Model\Comment');
+    }
+    /**
      * 一对一
      * 获取文章此文章的轮播图
      */

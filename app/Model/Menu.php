@@ -16,7 +16,7 @@ class Menu extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'parent_id', 'path', 'slug', 'component', 'title', 'icon', 'uri', 'order', 'status'
+        'parent_id', 'path', 'slug', 'component', 'title', 'icon', 'uri', 'order', 'status', 'hidden'
     ];
 
     protected $messages = [

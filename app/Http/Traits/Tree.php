@@ -50,6 +50,26 @@ trait Tree
         }
         return $result;
     }
+    /**
+     * 生成树形文章评论
+     *
+     * @param [type] $comments
+     * @param integer $pid
+     * @return void
+     */
+    public function commentTree($comments, $pid = 0)
+    {
+        $result = [];
+        foreach ($comments as $value) {
+            if ($value['pid'] === $pid) {
+                $tmp = $value;
+                $tmp['children'] = $this->commentTree($comments, $value['id']);
+                if (empty($tmp['children'])) unset($tmp['children']);
+                $result[] = $tmp;
+            }
+        }
+        return $result;
+    }
 
     /**
      * 查询某ID下的所有子集
@@ -57,16 +77,16 @@ trait Tree
      * @param array $data
      * @return array
      */
-    public function getAllChildrenId($model, $id, $data = [])
+    public function getAllChildrenId($model, $id, $data = [], $pName = 'parent_id')
     {
         if (!is_array($id)) {
             $id = [$id];
         }
-        $pids = $model->whereIn('parent_id', $id)->pluck('id')->toArray();
+        $pids = $model->whereIn($pName, $id)->pluck('id')->toArray();
         if (count($pids) > 0) {
             foreach ($pids as $v) {
                 $data[] = $v;
-                $data = $this->getAllChildrenId($model, $v, $data); //注意写$data 返回给上级
+                $data = $this->getAllChildrenId($model, $v, $data, $pName); //注意写$data 返回给上级
             }
         }
         if (count($data) > 0) {

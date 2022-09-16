@@ -42,7 +42,9 @@ Route::group([
 ], function () {
     // 运行日志
     Route::get('operation_logs', 'OperationLogController@index');
-    
+    // 上传图片
+    Route::post('instagrams/upload', 'InstagramController@upload');
+
     // 用户相关数据及操作
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
@@ -56,6 +58,7 @@ Route::group([
     // 角色未添加的用户
     Route::get('roles/{role}/admin', 'RoleUserController@admin');
     Route::get('articles/banner', 'ArticleController@banner');
+    
 
     // 菜单
     Route::apiResource('menus', 'MenuController')->except(['show']);
@@ -67,6 +70,8 @@ Route::group([
     Route::apiResource('article_categories', 'ArticleCategoryController')->except(['show']);
     // 轮播图
     Route::apiResource('banners', 'BannerController')->except(['show']);
+    // 照片墙
+    Route::apiResource('instagrams', 'InstagramController')->except(['show']);
     // 标签
     Route::apiResource('tags', 'TagController')->except(['show']);
     // 角色权限
@@ -75,6 +80,8 @@ Route::group([
     Route::apiResource('roles.users', 'RoleUserController')->except(['show', 'update']);
     // 用户权限
     Route::apiResource('users.permissions', 'UserPermissionController')->except(['show', 'update', 'destroy']);
+    // 文章评论
+    Route::apiResource('articles.comments', 'CommentController')->shallow();
 
     /**
      * 控制器

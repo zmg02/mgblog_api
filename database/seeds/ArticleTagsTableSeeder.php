@@ -13,6 +13,6 @@ class ArticleTagsTableSeeder extends Seeder
     {
         // 截断数据
         App\Model\ArticleTag::truncate();
-        factory(App\Model\ArticleTag::class, 100)->create();
+        factory(App\Model\ArticleTag::class, 20)->create();
     }
 }

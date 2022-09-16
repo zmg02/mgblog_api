@@ -27,7 +27,7 @@ $factory->define(User::class, function (Faker $faker) {
         'email_verified_time' => $faker->unixTime('now'),
         'password' => $faker->sha1,
         'status' => $faker->numberBetween(0, 1),
-        'is_admin' => $faker->numberBetween(0, 1),
+        'is_admin' => 0,
         'is_author' => $faker->numberBetween(0, 1),
         'article_count' => $faker->numberBetween(1, 100),
         'last_login_time' => $faker->unixTime('now'),

@@ -24,6 +24,7 @@ class CreateAdminTable extends Migration
             $table->string('uri')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->integer('order')->default(0);
+            $table->tinyInteger('hidden')->default(0);
             $table->integer('create_time')->default(0);
             $table->integer('update_time')->default(0);
         });

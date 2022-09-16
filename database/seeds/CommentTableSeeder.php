@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ArticlesTableSeeder extends Seeder
+class CommentTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,7 +12,7 @@ class ArticlesTableSeeder extends Seeder
     public function run()
     {
         // 截断数据
-        App\Model\Article::truncate();
-        factory(App\Model\Article::class, 60)->create();
+        App\Model\Comment::truncate();
+        factory(App\Model\Comment::class, 60)->create();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Api;
 use App\Http\Controllers\Controller;
 use App\Model\Article;
 use App\Model\ArticleCategory;
+use App\Model\ArticleTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -78,14 +79,22 @@ class ArticleController extends Controller
             'status' => $requestData['status'],
             'order' => $requestData['order'],
         ];
+        $tagIds = array_column($requestData['tag'], 'id');
+        $insertData = [];
         // 开启事务
         DB::beginTransaction();
         if ($article = $articleM->create($articleInfo)) {
-            if ($res = $article->tag()->saveMany([['article_id'=>$article['id'], 'tag_id'=>1],['article_id'=>$article['id'], 'tag_id'=>2]])) {
-                dd($res);
+            $articleTagM = new ArticleTag();
+            foreach ($tagIds as $tagId) {
+                $insertData[] = [
+                    'article_id' => $article['id'],
+                    'tag_id' => $tagId,
+                ];
+            }
+
+            if ($res = $articleTagM->insert($insertData)) {
                 DB::commit();
             } else {
-                dd($res);
                 DB::rollBack();
             }
         }
@@ -114,12 +123,59 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        $articleM = new Article();
+        $articleCategoryM = new ArticleCategory();
+        $articleTagM = new ArticleTag();
+        $categoryId = $request->input('category_id');
         $validator = $article->validate($request->all());
         if ($validator->fails()) {
             return api_response($validator->errors(), 4006, $validator->errors()->first());
         }
 
-        $result = $article->update($request->all());
+        $requestData = $request->all();
+        $articleInfo = [
+            'title' => $requestData['title'],
+            'default_img' => $requestData['default_img'],
+            'content' => $requestData['content'],
+            'category_id' => $requestData['category_id'],
+            'status' => $requestData['status'],
+            'order' => $requestData['order'],
+            'praise_count' => $requestData['praise_count'],
+        ];
+
+        // dd($article['category_id'], $categoryId);
+        $tagIds = array_column($requestData['tag'], 'id');
+        $insertData = [];
+        // 开启事务
+        DB::beginTransaction();
+        $articleRes = $categoryRes = $tagRes = false;
+        if ($articleRes = $articleM->where('id', $requestData['id'])->update($articleInfo)) {
+            if ($article['category_id'] != $categoryId) {
+                $categoryRes['old'] = $articleCategoryM->where('id', $article['category_id'])->decrement('count');
+                $categoryRes['new'] = $articleCategoryM->where('id', $categoryId)->increment('count');
+            }
+            foreach ($tagIds as $tagId) {
+                $insertData[] = [
+                    'article_id' => $requestData['id'],
+                    'tag_id' => $tagId,
+                ];
+            }
+
+            if ($articleTagM->where(['article_id' => $requestData['id']])->delete()) {
+                if ($tagRes = $articleTagM->insert($insertData)) {
+                    DB::commit();
+                } else {
+                    DB::rollBack();
+                }
+            }
+        }
+        $result['article'] = $articleRes;
+        $result['article_category'] = $categoryRes;
+        $result['article_tag'] = $tagRes;
+        if (!$articleRes || !$tagRes) {
+            return api_response($result, 4007, '文章修改失败');
+        }
+
         return api_response($result);
     }
 

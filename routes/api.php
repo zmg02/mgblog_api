@@ -58,6 +58,8 @@ Route::group([
     // 角色未添加的用户
     Route::get('roles/{role}/admin', 'RoleUserController@admin');
     Route::get('articles/banner', 'ArticleController@banner');
+    // 图片所有状态
+    Route::get('instagrams/status', 'InstagramController@status');
     
 
     // 菜单
@@ -71,7 +73,7 @@ Route::group([
     // 轮播图
     Route::apiResource('banners', 'BannerController')->except(['show']);
     // 照片墙
-    Route::apiResource('instagrams', 'InstagramController')->except(['show']);
+    Route::apiResource('instagrams', 'InstagramController')->except(['show', 'destroy']);
     // 标签
     Route::apiResource('tags', 'TagController')->except(['show']);
     // 角色权限

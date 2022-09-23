@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Illuminate\Support\Facades\Validator;
+
 class Instagram extends BaseModel
 {
     protected $guarded = [
@@ -24,5 +26,25 @@ class Instagram extends BaseModel
     public function tag()
     {
         return $this->belongsToMany('App\Model\Tag', 'instagram_tags');
+    }
+
+    protected $messages = [
+        'url.required' => '图片必须上传成功',
+        'user_id.required' => '作者未获取到',
+    ];
+
+    protected $rules = [
+        'url' => ['bail', 'required'],
+        'user_id' => ['required'],
+    ];
+    /**
+     * 表单验证
+     *
+     * @param [type] $data
+     * @return void
+     */
+    public function validate($data)
+    {
+        return Validator::make($data, $this->rules, $this->messages);
     }
 }

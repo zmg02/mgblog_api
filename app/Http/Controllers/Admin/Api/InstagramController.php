@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin\Api;
 
 use App\Http\Controllers\Controller;
 use App\Model\Instagram;
+use App\Model\InstagramTag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InstagramController extends Controller
 {
@@ -16,8 +18,9 @@ class InstagramController extends Controller
     public function index(Request $request)
     {
         $instagramM = new Instagram();
-        $perPage = $request->input('per_page', 20);
+        $perPage = $request->input('per_page', 50);
         $keywords = $request->query('keywords');
+        $status = $request->query('status');
         $tag = intval($request->input('tag'));
         $list = $instagramM->when($keywords, function($query) use ($keywords) {
             $query->whereHas('user', function ($query) use ($keywords) {
@@ -25,6 +28,9 @@ class InstagramController extends Controller
             })->orWhereHas('tag', function ($query) use ($keywords) {
                 $query->where('name', 'like', "%{$keywords}%");
             });
+        })
+        ->when(($status != null), function($query) use ($status) {
+            $query->where('status', '=', $status);
         })
         ->when($tag, function($query) use ($tag) {
             $query->whereHas('tag', function ($query) use ($tag) {
@@ -58,7 +64,7 @@ class InstagramController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($user, $data = [])
+    public function store($user, $data = [], $tagIds = [])
     {
         $instagramM = new Instagram();
         $insert = [
@@ -66,19 +72,30 @@ class InstagramController extends Controller
             'user_id' => $user['id'],
             'order' => 1
         ];
-        $banner = $instagramM->create($insert);
-        return api_response($banner);
-    }
+        $validator = $instagramM->validate($insert);
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        // 开启事务
+        DB::beginTransaction();
+        if ($instagram = $instagramM->create($insert)) {
+            $instagramTagM = new InstagramTag();
+            foreach ($tagIds as $tagId) {
+                $insertData[] = [
+                    'instagram_id' => $instagram['id'],
+                    'tag_id' => $tagId,
+                ];
+            }
+            if ($instagramTagM->insert($insertData)) {
+                DB::commit();
+            } else {
+                DB::rollBack();
+            }
+        }
+
+        $data = $instagramM->with(['user:id,name,avatar', 'tag:id,name'])->find($instagram['id']);
+        return api_response($data);
     }
 
     /**
@@ -88,20 +105,50 @@ class InstagramController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Instagram $instagram)
     {
-        //
-    }
+        $instagramM = new Instagram();
+        $instagramTagM = new InstagramTag();
+        $validator = $instagram->validate($request->all());
+        if ($validator->fails()) {
+            return api_response($validator->errors(), 4006, $validator->errors()->first());
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $requestData = $request->all();
+        $instagramInfo = [
+            'user_id' => $requestData['user_id'],
+            'status' => $requestData['status'],
+            'order' => $requestData['order'],
+        ];
+
+        $tagIds = array_column($requestData['tag'], 'id');
+        $insertData = [];
+        // 开启事务
+        DB::beginTransaction();
+        $instagramRes = $tagRes = false;
+        if ($instagramRes = $instagramM->where('id', $requestData['id'])->update($instagramInfo)) {
+            foreach ($tagIds as $tagId) {
+                $insertData[] = [
+                    'instagram_id' => $requestData['id'],
+                    'tag_id' => $tagId,
+                ];
+            }
+
+            if ($instagramTagM->where(['instagram_id' => $requestData['id']])->delete()) {
+                if ($tagRes = $instagramTagM->insert($insertData)) {
+                    DB::commit();
+                } else {
+                    DB::rollBack();
+                }
+            }
+        }
+        $result['instagram'] = $instagramRes;
+        $result['instagram_tag'] = $tagRes;
+        if (!$instagramRes || !$tagRes) {
+            return api_response($result, 4007, '文章修改失败');
+        }
+
+        return api_response($result);
     }
 
     /**
@@ -114,14 +161,28 @@ class InstagramController extends Controller
     {
         $user = $request->user();
         $file = $request->file('file');
+        $tags = $request->input('tags');
+        $tags = json_decode($tags, true);
+        $tagIds = array_column($tags, 'id');
+
         // 文件是否上传成功
         if ($file->isValid()) {
             $result = upload_img($file, 'instagram');
             $data = json_decode(json_encode($result), true);
             // 上传成功，保存数据
             if (isset($data['original']['code']) && $data['original']['code'] == 200) {
-                return $this->store($user, $data['original']);
+                return $this->store($user, $data['original'], $tagIds);
             }
         }
+    }
+
+    /**
+     * 图片所有状态
+     *
+     * @return void
+     */
+    public function status()
+    {
+        return api_response(config('instagram.status'));
     }
 }

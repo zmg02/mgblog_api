@@ -106,16 +106,24 @@ Route::namespace('Api')->prefix('v1')->group(function () {
     });
     // 不用登录的api
     Route::get('articles', 'ArticleController@index');
+
     Route::get('articles/last', 'ArticleController@last');
     Route::get('articles/hottest', 'ArticleController@hottest');
-    Route::get('articles/{article}', 'ArticleController@show');
     Route::get('articles/prev_article/{article}', 'ArticleController@getPrevArticle');
     Route::get('articles/next_article/{article}', 'ArticleController@getNextArticle');
-    Route::get('articleCategories', 'ArticleCategoryController@index');
-    Route::get('articleCategories/{articleCategory}', 'ArticleCategoryController@show');
+    Route::get('articles/new_article', 'ArticleController@getNewArticle');
+    Route::get('articles/{article}', 'ArticleController@show');
+    Route::get('article_categories', 'ArticleCategoryController@index');
+    Route::get('article_categories/{articleCategory}', 'ArticleCategoryController@show');
     Route::get('banners', 'BannerController@index');
     // 文章评论
     Route::get('articles/{article}/comments', 'ArticleCommentController@index')->name('articles.comments.index');
+    
+    // 照片墙
+    Route::get('instagrams', 'InstagramController@index');
+
+    // 标签
+    Route::apiResource('tags', 'TagController')->except(['show']);
 
     // 需要登录的api
     Route::middleware('auth:api')->group(function () {
@@ -123,9 +131,9 @@ Route::namespace('Api')->prefix('v1')->group(function () {
         Route::put('articles/{article}', 'ArticleController@update');
         Route::delete('articles/{article}', 'ArticleController@destroy');
 
-        Route::post('articleCategories', 'ArticleCategoryController@store');
-        Route::put('articleCategories/{articleCategory}', 'ArticleCategoryController@update');
-        Route::delete('articleCategories/{articleCategory}', 'ArticleCategoryController@destroy');
+        Route::post('article_categories', 'ArticleCategoryController@store');
+        Route::put('article_categories/{articleCategory}', 'ArticleCategoryController@update');
+        Route::delete('article_categories/{articleCategory}', 'ArticleCategoryController@destroy');
         Route::apiResource('articles.comments', 'ArticleCommentController')->only(['store', 'destroy']);
     });
 });

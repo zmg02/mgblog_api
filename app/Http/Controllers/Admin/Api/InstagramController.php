@@ -22,7 +22,8 @@ class InstagramController extends Controller
         $keywords = $request->query('keywords');
         $status = $request->query('status');
         $tag = intval($request->input('tag'));
-        $list = $instagramM->when($keywords, function($query) use ($keywords) {
+        $list = $instagramM->where('status','<>',0)
+        ->when($keywords, function($query) use ($keywords) {
             $query->whereHas('user', function ($query) use ($keywords) {
                 $query->where('name', 'like', "%{$keywords}%");
             })->orWhereHas('tag', function ($query) use ($keywords) {

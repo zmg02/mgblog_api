@@ -46,6 +46,18 @@ class ArticleController extends Controller
         return api_response($info);
     }
 
+    public function getNewArticle()
+    {
+        $articleM = new Article();
+        $info = $articleM
+        ->with(['user:*'])->with(['category:id,name'])
+        ->orderBy('create_time', 'desc')
+        ->orderBy('order', 'desc')
+        ->take(4)
+        ->get();
+        return api_response($info);
+    }
+
     public function store(Request $request)
     {
         $article = Article::create($request->all());

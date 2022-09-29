@@ -57,7 +57,7 @@ class Comment extends BaseModel
         return Validator::make($data, $this->rules, $this->messages);
     }
 
-        /**
+    /**
      * 获取注册时间属性
      *
      * @param [type] $value

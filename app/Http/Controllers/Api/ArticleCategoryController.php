@@ -16,9 +16,10 @@ class ArticleCategoryController extends Controller
     public function index(Request $request)
     {
         $articleCategoryM = new ArticleCategory();
-        $pageSize = $request->input('page_size', 10);
+        // $pageSize = $request->input('page_size', 10);
+        // $list = $articleCategoryM->paginate($pageSize);
 
-        $list = $articleCategoryM->paginate($pageSize);
+        $list = $articleCategoryM->where('count', '>', 0)->get();
         return api_response($list);
     }
 

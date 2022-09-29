@@ -98,4 +98,15 @@ class Article extends BaseModel
         return Validator::make($data, $this->rules, $this->messages);
     }
 
+    /**
+     * 获取注册时间属性
+     *
+     * @param [type] $value
+     * @return void
+     */
+    public function getCreateTimeAttribute()
+    {
+        return date('Y年m月d日 H:i', $this->attributes['create_time']);
+    }
+
 }

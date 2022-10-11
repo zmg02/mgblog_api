@@ -28,6 +28,7 @@ Route::group([
     'prefix' => 'admin/v1',
     'namespace' => 'Admin\Api'
 ], function () {
+    Route::get('settings/get_setting', 'SettingController@getSetting');
     Route::post('login', 'AuthController@login');
     Route::post('articles/upload', 'ArticleController@upload');
     Route::post('banners/upload', 'BannerController@upload');
@@ -44,6 +45,7 @@ Route::group([
     Route::get('operation_logs', 'OperationLogController@index');
     // 上传图片
     Route::post('instagrams/upload', 'InstagramController@upload');
+    Route::post('settings/upload', 'SettingController@upload');
 
     // 用户相关数据及操作
     Route::post('logout', 'AuthController@logout');
@@ -60,6 +62,10 @@ Route::group([
     Route::get('articles/banner', 'ArticleController@banner');
     // 图片所有状态
     Route::get('instagrams/status', 'InstagramController@status');
+    // 后台设置
+    Route::post('settings/form', 'SettingController@form');
+    Route::get('settings', 'SettingController@index');
+    Route::post('settings', 'SettingController@store');
     
 
     // 菜单

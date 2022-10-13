@@ -12,9 +12,15 @@ class ArticleController extends Controller
     {
         $articleM = new Article();
         $pageSize = $request->input('page_size', 20);
+        $categoryName = '私密';
 
-        $list = $articleM->with(['user:id,name,avatar'])
-            ->with(['category:id,name'])->select('*', 'default_img as src')->paginate($pageSize);
+        $list = $articleM->where('status', 1)
+            ->whereHas('category', function ($query) use ($categoryName) {
+                $query->where('name', '<>', "$categoryName");
+            })
+            ->with(['user:id,name,avatar'])
+            ->with(['category:id,name'])
+            ->select('*', 'default_img as src')->paginate($pageSize);
         return api_response($list);
     }
 
